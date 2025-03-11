@@ -12,8 +12,8 @@ Because I think I can make this project better
 
 
 # What?
-`git clone <this>`
-`cd <this>`
-`git submodule update`
-`cd Randomizer`
-profit?
+1. `git clone <this>`
+1. `cd <this>`
+1. `git submodule update`
+1. `cd Randomizer`
+1. profit?
