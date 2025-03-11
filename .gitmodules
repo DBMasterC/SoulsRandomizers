@@ -1,0 +1,12 @@
+[submodule "SoulsFormats"]
+	path = SoulsFormats
+	url = git@github.com:thefifthmatt/SoulsFormats.git
+[submodule "SoulsFormatsNEXT"]
+	path = SoulsFormatsNEXT
+	url = https://github.com/JKAnderson/SoulsFormats
+[submodule "SoulsIds"]
+	path = SoulsIds
+	url = git@github.com:thefifthmatt/SoulsIds.git
+[submodule "yet-another-tab-control"]
+	path = yet-another-tab-control
+	url = git@github.com:thefifthmatt/yet-another-tab-control.git
