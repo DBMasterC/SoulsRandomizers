@@ -761,7 +761,7 @@ namespace RandomizerCommon
             int mapUnlockFlag = 18000021;
             if (opt["allmaps"])
             {
-                FMG npcNames = game.ItemFMGs["NpcName"];
+                var npcNames = game.ItemFMGs["NpcName"];
                 HashSet<int> merchantNames = new HashSet<int>(
                     npcNames.Entries.Where(e => e.Text != null && e.Text.Contains("Merchant")).Select(e => e.ID));
                 void rewriteMerchantIcons(PARAM.Row row)
@@ -1188,7 +1188,7 @@ namespace RandomizerCommon
             }
             if (opt["itemname"])
             {
-                void printNames(string paramName, FMG fmg)
+                void printNames(string paramName, FMGX fmg)
                 {
                     PARAM param = game.Params[paramName];
                     int match = 0;

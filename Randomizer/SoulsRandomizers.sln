@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EldenRingRandomizer", "Elde
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrayIris.Utilities", "..\yet-another-tab-control\GrayIris.Utilities.csproj", "{38D57FE6-C75F-4B05-9E4F-D02A48CAA21E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoulsFormats", "..\SoulsFormatsNEXT\SoulsFormats\SoulsFormats.csproj", "{972BC3AD-3DF3-4578-8731-33DCCFCCF426}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,14 @@ Global
 		{38D57FE6-C75F-4B05-9E4F-D02A48CAA21E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{38D57FE6-C75F-4B05-9E4F-D02A48CAA21E}.Release|x64.ActiveCfg = Release|Any CPU
 		{38D57FE6-C75F-4B05-9E4F-D02A48CAA21E}.Release|x64.Build.0 = Release|Any CPU
+		{972BC3AD-3DF3-4578-8731-33DCCFCCF426}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{972BC3AD-3DF3-4578-8731-33DCCFCCF426}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{972BC3AD-3DF3-4578-8731-33DCCFCCF426}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{972BC3AD-3DF3-4578-8731-33DCCFCCF426}.Debug|x64.Build.0 = Debug|Any CPU
+		{972BC3AD-3DF3-4578-8731-33DCCFCCF426}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{972BC3AD-3DF3-4578-8731-33DCCFCCF426}.Release|Any CPU.Build.0 = Release|Any CPU
+		{972BC3AD-3DF3-4578-8731-33DCCFCCF426}.Release|x64.ActiveCfg = Release|Any CPU
+		{972BC3AD-3DF3-4578-8731-33DCCFCCF426}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

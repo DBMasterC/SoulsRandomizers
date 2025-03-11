@@ -39,8 +39,8 @@ namespace RandomizerCommon
             // defeat a named enemy
             // defeat a formidable foe
             // defeat a powerful enemy
-            FMG itemDesc = game.ItemFMGs["アイテム説明"];
-            FMG eventText = game.MenuFMGs["イベントテキスト"];
+            var itemDesc = game.ItemFMGs["アイテム説明"];
+            var eventText = game.MenuFMGs["イベントテキスト"];
             if (opt["writehints"])
             {
                 List<int> eventIds = new List<int>

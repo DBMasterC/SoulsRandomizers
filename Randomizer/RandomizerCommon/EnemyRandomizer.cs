@@ -177,34 +177,34 @@ namespace RandomizerCommon
                 ann = deserializer.Deserialize<EnemyAnnotations>(reader);
             }
 #if DEV
-            if (opt["dumpenemy"])
-            {
-                new EnemyConfigGen(game, events, eventConfig).WriteEldenEnemyCategories(ann); return null;
-            }
-            if (game.EldenRing && (opt["full"] || opt["dumpenemylist"]))
-            {
-                enemyConfigPath = "configs/diste/enemylist.txt";
-                using (var reader = File.OpenText(enemyConfigPath))
-                {
-                    EnemyAnnotations ann2 = deserializer.Deserialize<EnemyAnnotations>(reader);
-                    ann.Enemies = ann2.Enemies;
-                    if (!opt["dumpenemylist"] || opt["lite"])
-                    {
-                        ann.Categories.AddRange(ann2.Categories);
-                    }
-                }
-                if (opt["dumpenemylist"])
-                {
-                    if (opt["lite"])
-                    {
-                        new EnemyConfigGen(game, events, eventConfig).WriteEldenEnemyLite(ann, opt); return null;
-                    }
-                    else
-                    {
-                        new EnemyConfigGen(game, events, eventConfig).WriteEldenEnemyList(ann, opt); return null;
-                    }
-                }
-            }
+            // if (opt["dumpenemy"])
+            // {
+            //     new EnemyConfigGen(game, events, eventConfig).WriteEldenEnemyCategories(ann); return null;
+            // }
+            // if (game.EldenRing && (opt["full"] || opt["dumpenemylist"]))
+            // {
+            //     enemyConfigPath = "configs/diste/enemylist.txt";
+            //     using (var reader = File.OpenText(enemyConfigPath))
+            //     {
+            //         EnemyAnnotations ann2 = deserializer.Deserialize<EnemyAnnotations>(reader);
+            //         ann.Enemies = ann2.Enemies;
+            //         if (!opt["dumpenemylist"] || opt["lite"])
+            //         {
+            //             ann.Categories.AddRange(ann2.Categories);
+            //         }
+            //     }
+            //     if (opt["dumpenemylist"])
+            //     {
+            //         if (opt["lite"])
+            //         {
+            //             new EnemyConfigGen(game, events, eventConfig).WriteEldenEnemyLite(ann, opt); return null;
+            //         }
+            //         else
+            //         {
+            //             new EnemyConfigGen(game, events, eventConfig).WriteEldenEnemyList(ann, opt); return null;
+            //         }
+            //     }
+            // }
 #endif
 
             List<EnemyClass> randomizedTypes = new List<EnemyClass>
@@ -658,7 +658,7 @@ namespace RandomizerCommon
             {
                 if (game.Sekiro)
                 {
-                    new EnemyConfigGen(game, events, eventConfig).WriteSekiroEvents(opt, infos, defaultData);
+                    // new EnemyConfigGen(game, events, eventConfig).WriteSekiroEvents(opt, infos, defaultData);
                 }
                 else if (game.EldenRing)
                 {
@@ -668,16 +668,16 @@ namespace RandomizerCommon
                     }
                     else if (opt["rewrite"])
                     {
-                        new EnemyConfigGen(game, events, eventConfig).WriteEldenLite(opt, opt["lite"]);
+                        // new EnemyConfigGen(game, events, eventConfig).WriteEldenLite(opt, opt["lite"]);
                     }
                     else
                     {
-                        new EnemyConfigGen(game, events, eventConfig).WriteEldenEvents(opt, infos, defaultData);
+                        // new EnemyConfigGen(game, events, eventConfig).WriteEldenEvents(opt, infos, defaultData);
                     }
                 }
                 else
                 {
-                    new EnemyConfigGen(game, events, eventConfig).WriteDS3Events(opt, infos, defaultData);
+                    // new EnemyConfigGen(game, events, eventConfig).WriteDS3Events(opt, infos, defaultData);
                 }
                 return null;
             }
@@ -3428,7 +3428,7 @@ namespace RandomizerCommon
                             // Don't allow wooooooo enemies or true monk to walk around, as this interrupts their invisibility
                             if (e is MSBS.Part.Enemy es)
                             {
-                                es.PatrolIndex = -1;
+                                // es.PatrolIndex = -1; //todo - what is this?
                             }
                             else if (e is MSB3.Part.Enemy e3)
                             {
@@ -4737,7 +4737,7 @@ namespace RandomizerCommon
                 foreach (EventValue derived in reloc.Keys.ToList())
                 {
                     // Handle normal SplitFrom rewrites (not meant to handle dupes)
-                    if (derived.ID is int id
+                    if (derived.IntID is int id
                         && infos.TryGetValue(id, out EnemyInfo baseInfo)
                         && baseInfo.SplitFrom > 0)
                     {

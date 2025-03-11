@@ -256,8 +256,8 @@ namespace RandomizerCommon
         public void Write(RandomizerOptions opt, Permutation perm, PermutationWriter.Result permResult)
         {
             // Get some bonfire names
-            FMG placeFmg = game.ItemFMGs["PlaceName"];
-            FMG warpFmg = game.MenuFMGs["GR_MenuText"];
+            var placeFmg = game.ItemFMGs["PlaceName"];
+            var warpFmg = game.MenuFMGs["GR_MenuText"];
             Dictionary<string, int> revNameIds = new Dictionary<string, int>();
             foreach (FMG.Entry entry in placeFmg.Entries)
             {
@@ -1400,8 +1400,8 @@ namespace RandomizerCommon
         {
             // Some attempts to understand fields in WorldMapPointParam.
             // Update this with cell row names if it'll ever be useful again.
-            FMG placeFmg = game.ItemFMGs["PlaceName"];
-            FMG npcFmg = game.ItemFMGs["NpcName"];
+            var placeFmg = game.ItemFMGs["PlaceName"];
+            var npcFmg = game.ItemFMGs["NpcName"];
             Dictionary<string, object> ignoreCells =
                 game.Params["WorldMapPointParam"].Rows[0].Cells.ToDictionary(c => c.Def.InternalName, c => c.Value);
             foreach (PARAM.Row row in game.Params["WorldMapPointParam"].Rows)

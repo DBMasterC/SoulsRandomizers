@@ -1,10 +1,10 @@
-﻿using SoulsFormats;
-using SoulsIds;
+﻿using SoulsIds;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using SoulsFormats;
 using YamlDotNet.Core.Tokens;
 using static RandomizerCommon.LocationData;
 using static RandomizerCommon.Util;

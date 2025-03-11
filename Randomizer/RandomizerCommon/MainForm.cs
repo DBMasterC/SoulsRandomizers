@@ -12,6 +12,7 @@ namespace RandomizerCommon
 {
     public partial class MainForm : Form
     {
+        
         private static readonly string enemySeedPlaceholder = "(same as overall seed)";
 
         private Messages messages = new Messages(null);

@@ -1249,8 +1249,8 @@ namespace RandomizerCommon
                 game.Params["ActionButtonParam"][9351]["grayoutFlag"].Value = 14005108;
 
                 // Description for path of the dragon so it's not ?GoodsInfo?
-                FMG goodsShort = game.ItemFMGs["アイテム説明"];
-                FMG goodsLong = game.ItemFMGs["アイテムうんちく"];
+                var goodsShort = game.ItemFMGs["アイテム説明"];
+                var goodsLong = game.ItemFMGs["アイテムうんちく"];
                 string dragonInfo = "A gesture of meditation channeling the eternal essence of the ancient dragons";
                 goodsShort[9030] = dragonInfo;
                 goodsLong[9030] = $"{dragonInfo}.\n\nThe path to ascendence can be achieved only by the most resolute of seekers. Proper utilization of this technique can grant deep inner focus.";

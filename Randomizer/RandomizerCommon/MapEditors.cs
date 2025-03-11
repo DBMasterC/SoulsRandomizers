@@ -630,7 +630,8 @@ namespace RandomizerCommon
                 }
                 e2.Name = $"{prefix}{e2.ModelName}_{newPartId:d4}";
                 // Needed to avoid sudden deaths, evidently. TODO see where this mismatches in vanilla
-                e2.Unk08 = newPartId;
+                //TODO seems important....
+                e2.Unk8 = new MSBE.Part.UnkStruct8();//newPartId;
                 // Transplanting talks seems to break most talk scripts
                 e2.TalkID = 0;
                 msb.Parts.Enemies.Add(e2);

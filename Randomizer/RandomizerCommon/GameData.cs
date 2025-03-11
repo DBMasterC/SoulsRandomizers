@@ -208,9 +208,6 @@ namespace RandomizerCommon
         public Dictionary<string, MSBS> SekiroMaps => Maps.ToDictionary(e => e.Key, e => e.Value as MSBS);
         public Dictionary<string, MSBE> EldenMaps =>
             Maps.Where(e => e.Value is MSBE).ToDictionary(e => e.Key, e => e.Value as MSBE);
-#if DEV
-        public Dictionary<string, MSBAC6> AC6Maps => Maps.ToDictionary(e => e.Key, e => e.Value as MSBAC6);
-#endif
 
         public void Load(MergedMods mods)
         {
@@ -426,7 +423,7 @@ namespace RandomizerCommon
         public string AC6NpcName(int accountId)
         {
             // Skip AccountParam and assume the name for the time being
-            FMG fmg = ItemFMGs["NPC名"];
+            var fmg = ItemFMGs["NPC名"];
             string type = fmg[accountId];
             string name = fmg[accountId + 1];
             if (name == "<?null?>") name = null;
@@ -1099,9 +1096,7 @@ namespace RandomizerCommon
             }
             else if (AC6)
             {
-#if DEV
-                Maps = Editor.Load("Vanilla", path => (IMsb)MSBAC6.Read(path), "*.msb.dcx");
-#endif
+                throw new NotSupportedException();
             }
             else
             {

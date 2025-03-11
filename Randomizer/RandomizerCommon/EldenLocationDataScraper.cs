@@ -521,11 +521,11 @@ namespace RandomizerCommon
             }
 
 #if DEV
-            if (opt["dumpitemflag"])
-            {
-                new EnemyConfigGen(game, null, null).WriteEldenItemEvents(data);
-                return null;
-            }
+            // if (opt["dumpitemflag"])
+            // {
+            //     new EnemyConfigGen(game, null, null).WriteEldenItemEvents(data);
+            //     return null;
+            // }
 #endif
 
             return data;

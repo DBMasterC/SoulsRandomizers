@@ -42,7 +42,7 @@ namespace RandomizerCommon
         public EldenForm(bool dumpMessages = false, bool loadEmpty = false)
         {
             InitializeComponent();
-            Text = $"Elden Ring Item and Enemy Randomizer {Randomizer.EldenVersion}";
+            Text = "Get in losers, we're going to randomville";
             Runner = new ModRunner("config_eldenringrandomizer.toml", @"diste\ModEngine\modengine2_launcher.exe");
             // Set up tabs real quick
             tabControl.TabDrawer = new GrayIris.Utilities.UI.Controls.XlTabDrawer();

@@ -36,7 +36,7 @@ namespace RandomizerCommon
                 .Where(r => r.ID >= 9000 && r.ID < 9100)
                 .ToDictionary(r => r.ID, r => r);
             Dictionary<int, string> gestureNames = new Dictionary<int, string>();
-            FMG goodsFmg = game.ItemFMGs["GoodsName"];
+            var goodsFmg = game.ItemFMGs["GoodsName"];
             foreach (PARAM.Row row in game.Params["GestureParam"].Rows)
             {
                 if (norandom.Contains(row.ID)) continue;

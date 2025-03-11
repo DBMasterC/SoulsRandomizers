@@ -2954,7 +2954,7 @@ namespace RandomizerCommon
                 }
                 AinselStart = GetArenas("m12_01_00_00", r => r.Name == "Env_Box204" || r.Name == "Env_Box501");
                 AinselMain = GetArenas("m12_01_00_00", r => r.Name == "Env_Box052" || r.Name == "Env_Box053" || r.Name == "Env_Box054");
-                Moonlight = GetArenas("m60_08_10_02", r => r is MSBE.Region.PlayArea p && p.UnkT00 == 6202000);
+                Moonlight = GetArenas("m60_08_10_02", r => r is MSBE.Region.PlayArea p /*&& p.UnkT00 == 6202000*/); //TODO not sure.
                 SacredGround = GetArenas("m12_02_00_00", r => r.Name.StartsWith("サウンド領域_BGM_マリカ遺跡"));
             }
 

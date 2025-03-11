@@ -408,7 +408,7 @@ namespace RandomizerCommon
             {
                 FMGDictionary fmgs = Category == FMGCategory.Item ? itemFmgs : menuFmgs;
                 if (fmgs == null || !fmgs.ContainsKey(Name)) throw new Exception($"Error: {Category} FMG archive is missing {Name}");
-                FMG fmg = fmgs[Name];
+                var fmg = fmgs[Name];
                 string text = fmg[ID];
                 if (string.IsNullOrWhiteSpace(text))
                 {
