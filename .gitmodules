@@ -4,3 +4,6 @@
 [submodule "yet-another-tab-control"]
 	path = yet-another-tab-control
 	url = git@github.com:thefifthmatt/yet-another-tab-control.git
+[submodule "SoulsFormatsNEXT"]
+	path = SoulsFormatsNEXT
+	url = git@github.com:soulsmods/SoulsFormatsNEXT.git
