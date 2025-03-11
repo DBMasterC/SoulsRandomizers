@@ -7,6 +7,7 @@ using System.Numerics;
 using SoulsFormats;
 using SoulsIds;
 using static RandomizerCommon.Util;
+using MSBE = SoulsFormats.MSB;
 
 namespace RandomizerCommon
 {
@@ -109,8 +110,8 @@ namespace RandomizerCommon
             }
 
             // First, bonfires
-            FMG placeFmg = game.ItemFMGs["PlaceName"];
-            FMG warpFmg = game.MenuFMGs["GR_MenuText"];
+            FMGX placeFmg = game.ItemFMGs["PlaceName"];
+            FMGX warpFmg = game.MenuFMGs["GR_MenuText"];
             Dictionary<int, string> cats = new Dictionary<int, string>();
             foreach (PARAM.Row row in game.Params["BonfireWarpSubCategoryParam"].Rows)
             {
@@ -382,7 +383,7 @@ namespace RandomizerCommon
             Dictionary<string, MSBE> maps = game.EldenMaps;
             foreach (string id in includedMaps)
             {
-                maps.TryGetValue(id, out MSBE msb);
+                maps.TryGetValue(id, out MSB msb);
                 if (msb == null)
                 {
                     msb = MSBE.Read($@"{msbDir}\{id}.msb.dcx");
