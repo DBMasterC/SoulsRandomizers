@@ -176,122 +176,7 @@ namespace RandomizerCommon
             }
 
             // Slightly different high-level algorithm for each game.
-            if (game.Sekiro)
-            {
-                Events events = new Events($@"{game.Dir}\Base\sekiro-common.emedf.json");
-                EventConfig eventConfig;
-                using (var reader = File.OpenText($@"{game.Dir}\Base\events.txt"))
-                {
-                    IDeserializer deserializer = new DeserializerBuilder().Build();
-                    eventConfig = deserializer.Deserialize<EventConfig>(reader);
-                }
-
-                EnemyLocations locations = null;
-                if (opt["enemy"])
-                {
-                    notify?.Invoke("Randomizing enemies");
-                    locations = new EnemyRandomizer(game, events, eventConfig).Run(opt, preset);
-                    if (!opt["enemytoitem"])
-                    {
-                        locations = null;
-                    }
-                }
-                if (opt["item"])
-                {
-                    notify?.Invoke("Randomizing items");
-                    SekiroLocationDataScraper scraper = new SekiroLocationDataScraper();
-                    LocationData data = scraper.FindItems(game);
-                    AnnotationData anns = new AnnotationData(game, data);
-                    anns.Load(opt);
-                    anns.ProcessRestrictions(opt, locations);
-
-                    SkillSplitter.Assignment split = null;
-                    if (!opt["norandom_skills"] && opt["splitskills"])
-                    {
-                        split = new SkillSplitter(game, data, anns, events).SplitAll();
-                    }
-
-                    Permutation perm = new Permutation(game, data, anns, messages, explain: false);
-                    perm.Logic(new Random(seed), opt, preset);
-
-                    notify?.Invoke("Editing game files");
-                    PermutationWriter write = new PermutationWriter(game, data, anns, events, eventConfig);
-                    write.Write(new Random(seed + 1), perm, opt);
-                    if (!opt["norandom_skills"])
-                    {
-                        SkillWriter skills = new SkillWriter(game, data, anns);
-                        skills.RandomizeTrees(new Random(seed + 2), perm, split);
-                    }
-                    if (opt["edittext"])
-                    {
-                        HintWriter hints = new HintWriter(game, data, anns);
-                        hints.Write(opt, perm);
-                    }
-                }
-                MiscSetup.SekiroCommonPass(game, events, opt);
-
-                notify?.Invoke("Writing game files");
-                if (!opt["dryrun"])
-                {
-                    game.SaveSekiro(outPath);
-                }
-                return;
-            }
-            else if (game.DS3)
-            {
-                Events events = new Events($@"{game.Dir}\Base\ds3-common.emedf.json", darkScriptMode: true);
-                EventConfig eventConfig;
-                using (var reader = File.OpenText($@"{game.Dir}\Base\events.txt"))
-                {
-                    IDeserializer deserializer = new DeserializerBuilder().Build();
-                    eventConfig = deserializer.Deserialize<EventConfig>(reader);
-                }
-
-                // This is currently done before enemy randomizer as it refers to map data which may change.
-                LocationDataScraper scraper = new LocationDataScraper(logUnused: false);
-                LocationData data = scraper.FindItems(game);
-                AnnotationData ann = new AnnotationData(game, data);
-                ann.Load(opt);
-
-                if (opt["enemy"])
-                {
-                    notify?.Invoke("Randomizing enemies");
-                    new EnemyRandomizer(game, events, eventConfig).Run(opt, preset);
-                }
-
-                if (opt["item"])
-                {
-                    ann.AddSpecialItems();
-                    notify?.Invoke("Randomizing items");
-                    Random random = new Random(seed);
-                    Permutation permutation = new Permutation(game, data, ann, messages, explain: false);
-                    permutation.Logic(random, opt, null);
-
-                    notify?.Invoke("Editing game files");
-                    random = new Random(seed + 1);
-                    PermutationWriter writer = new PermutationWriter(game, data, ann, events, null);
-                    writer.Write(random, permutation, opt);
-                    random = new Random(seed + 2);
-                    // TODO maybe randomize other characters no matter what, only do self for item rando
-                    CharacterWriter characters = new CharacterWriter(game, data);
-                    characters.Write(random, opt);
-                }
-                else if (opt["enemychr"])
-                {
-                    // TODO: This is not used, right?
-                    Random random = new Random(seed);
-                    CharacterWriter characters = new CharacterWriter(game, data);
-                    characters.Write(random, opt);
-                }
-                MiscSetup.DS3CommonPass(game, events, opt);
-
-                notify?.Invoke("Writing game files");
-                if (!opt["dryrun"])
-                {
-                    game.SaveDS3(outPath, encrypted);
-                }
-            }
-            else if (game.EldenRing)
+            if (game.EldenRing)
             {
 #if DEBUG
                 if (opt["noitem"])
@@ -443,9 +328,6 @@ namespace RandomizerCommon
 
                     game.SaveEldenRing(outPath, opt["uxm"], options, notifyMap);
                 }
-            }
-            else if (game.AC6)
-            {
             }
         }
     }

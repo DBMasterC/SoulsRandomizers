@@ -88,7 +88,7 @@ namespace RandomizerCommon
         {
             this.game = game;
             this.data = data;
-            locationOrder = game.Sekiro ? sekiroLocationOrder : ds3LocationOrder;
+            locationOrder = /*game.Sekiro ? sekiroLocationOrder : */ ds3LocationOrder; 
             locationIndex = Enumerable.Range(0, locationOrder.Count()).ToDictionary(i => locationOrder[i], i => i);
         }
 
@@ -238,11 +238,6 @@ namespace RandomizerCommon
                     {
                         exclude.Add("until");
                     }
-                    if (game.DS3 && !options["dlc1"])
-                    {
-                        // In DS3, some handmaid shops become available from DLC1
-                        exclude.Add("dlc1");
-                    }
                     if (group.Includes == "keyitems")
                     {
                         if (options["headlessignore"])
@@ -297,42 +292,7 @@ namespace RandomizerCommon
                 ItemRestrict[placement.Key] = placement;
             }
             // Set up race mode tags
-            if (game.Sekiro)
-            {
-                RaceModeTags.UnionWith(new[] { "boss", "miniboss", "racemode" });
-                if (!options["headlessignore"])
-                {
-                    // Unless headless can contain key items, don't allow them to contain race mode locations either
-                    RaceModeTags.Add("headless");
-                }
-            }
-            else if (game.DS3)
-            {
-                RaceModeTags.UnionWith(new[] { "boss", "racemode" });
-                if (options["raceloc_ashes"])
-                {
-                    // This also adds items in ashes to race locations, vs previously they're random.
-                    RaceModeTags.Add("raceshop");
-                    RaceModeTags.Add("ashes");
-                }
-                if (options["raceloc_miniboss"])
-                {
-                    RaceModeTags.Add("miniboss");
-                }
-                if (options["raceloc_lizard"])
-                {
-                    RaceModeTags.Add("lizard");
-                }
-                if (options["raceloc_chest"])
-                {
-                    RaceModeTags.Add("chest");
-                }
-                if (options["raceloc_ring"])
-                {
-                    RaceModeTags.Add("ring");
-                }
-            }
-            else if (game.EldenRing)
+            if (game.EldenRing)
             {
                 RaceModeTags.UnionWith(new[] { "racemode", "boss" });
                 if (options["raceloc_health"])
@@ -557,10 +517,6 @@ namespace RandomizerCommon
                     && slot.QuestReqs != null && slot.AreaReqs.Count > 0)
                 {
                     effectiveArea = slot.AreaReqs[0];
-                }
-                if (game.DS3 && !slot.TagList.Contains("boss") && (slot.TagList.Contains("mid") || slot.TagList.Contains("late")))
-                {
-                    Areas[effectiveArea].HasProgression = true;
                 }
                 if (slot.Area != effectiveArea)
                 {
@@ -818,7 +774,8 @@ namespace RandomizerCommon
                 ItemLocation loc = data.Location(key);
                 locationSet.UnionWith(loc.GetLocations());
             }
-            string location = game.Sekiro ? "ashinaoutskirts_temple" : (game.EldenRing ? "limgrave" : "firelink");
+
+            string location = "limgrave";
             if (locationSet.Count > 0)
             {
                 if (game.EldenRing)
@@ -877,7 +834,7 @@ namespace RandomizerCommon
 
         private string FullArea(string area)
         {
-            if (!game.DS3 && !Areas.ContainsKey(area))
+            if (!Areas.ContainsKey(area))
             {
                 if (game.EldenRing && game.LocationNames.TryGetValue(area, out string mapName))
                 {

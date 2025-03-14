@@ -19,7 +19,9 @@ namespace RandomizerCommon
             public Dictionary<string, EquipCategory> BaseStart { get; set; }
             public List<CharacterClass> Classes { get; set; }
             public List<string> Stats { get; set; }
+
             public List<string> WeaponSlots { get; set; }
+
             // Items which wouldn't be considered weapons, and optional category
             public Dictionary<int, EquipCategory> WeaponCategories { get; set; }
             public List<string> ArmorTypes { get; set; }
@@ -30,11 +32,22 @@ namespace RandomizerCommon
         public enum EquipCategory
         {
             UNSET,
-            WEAPON, SHIELD, DOUBLE_WEAPON,
-            CATALYST, TALISMAN, FLAME,
-            SORCERY, MIRACLE, PYROMANCY,
-            BOW, ARROW, BOLT,
-            HEAD, BODY, ARM, LEG
+            WEAPON,
+            SHIELD,
+            DOUBLE_WEAPON,
+            CATALYST,
+            TALISMAN,
+            FLAME,
+            SORCERY,
+            MIRACLE,
+            PYROMANCY,
+            BOW,
+            ARROW,
+            BOLT,
+            HEAD,
+            BODY,
+            ARM,
+            LEG
         }
 
         private static readonly List<EquipCategory> DescriptionPriority = new List<EquipCategory>
@@ -69,9 +82,11 @@ namespace RandomizerCommon
             public int Fai { get; set; }
             public int Arc { get; set; }
             public int Att { get; set; }
+
             public int Eligible(StatReq ch)
             {
-                int[] comps = new int[] {
+                int[] comps = new int[]
+                {
                     Str == 0 ? 0 : ch.Str - Str,
                     Dex == 0 ? 0 : ch.Dex - Dex,
                     Int == 0 ? 0 : ch.Int - Int,
@@ -84,10 +99,12 @@ namespace RandomizerCommon
                 if (Str == 0 && Dex == 0 && Int == 0 && Fai == 0 && Arc == 0) return 4;
                 return comps.Sum();
             }
+
             public int GetMaxStat()
             {
                 return new[] { Str, Dex, Int, Arc, Fai }.Max();
             }
+
             public void Adjust(StatReq wep)
             {
                 if (wep.Str > Str) Str = wep.Str;
@@ -96,14 +113,17 @@ namespace RandomizerCommon
                 if (wep.Fai > Fai) Fai = wep.Fai;
                 if (wep.Arc > Arc) Arc = wep.Arc;
             }
-            public override string ToString() => $"StatReq[Str={Str}, Dex={Dex}, Int={Int}, Fai={Fai}, Arc={Arc}, Att={Att}]";
+
+            public override string ToString() =>
+                $"StatReq[Str={Str}, Dex={Dex}, Int={Int}, Fai={Fai}, Arc={Arc}, Att={Att}]";
         }
 
         private static readonly Dictionary<string, EquipCategory> DS3BaseStart = new Dictionary<string, EquipCategory>()
         {
-                { "equip_Wep_Right", EquipCategory.WEAPON },
-                { "equip_Wep_Left", EquipCategory.SHIELD },
+            { "equip_Wep_Right", EquipCategory.WEAPON },
+            { "equip_Wep_Left", EquipCategory.SHIELD },
         };
+
         private static readonly List<CharacterClass> DS3Classes = new List<CharacterClass>()
         {
             new CharacterClass
@@ -186,7 +206,9 @@ namespace RandomizerCommon
             },
         };
 
-        private static readonly Dictionary<string, EquipCategory> EldenBaseStart = new Dictionary<string, EquipCategory>();
+        private static readonly Dictionary<string, EquipCategory> EldenBaseStart =
+            new Dictionary<string, EquipCategory>();
+
         private static readonly List<CharacterClass> EldenClasses = new List<CharacterClass>()
         {
             new CharacterClass
@@ -307,7 +329,8 @@ namespace RandomizerCommon
             },
         };
 
-        private readonly List<EquipCategory> ArmorCats = new List<EquipCategory> { EquipCategory.HEAD, EquipCategory.BODY, EquipCategory.ARM, EquipCategory.LEG };
+        private readonly List<EquipCategory> ArmorCats = new List<EquipCategory>
+            { EquipCategory.HEAD, EquipCategory.BODY, EquipCategory.ARM, EquipCategory.LEG };
 
         private GameData game;
         private LocationData data;
@@ -322,36 +345,22 @@ namespace RandomizerCommon
             g = new GameCharacters
             {
                 StartId = 3000,
-                WeaponSlots = new List<string> { "equip_Wep_Right", "equip_Subwep_Right", "equip_Wep_Left", "equip_Subwep_Left" },
+                WeaponSlots = new List<string>
+                    { "equip_Wep_Right", "equip_Subwep_Right", "equip_Wep_Left", "equip_Subwep_Left" },
                 ArmorTypes = new List<string> { "headEquip", "bodyEquip", "armEquip", "legEquip" },
             };
-            if (game.DS3)
+            if (game.EldenRing)
             {
-                g.Stats = new List<string> { "Vit", /* vigor */ "Wil" /* attunement */, "End", "Str", "Dex", "Mag", "Fai", "Luc", "Durability" /* vit */ };
-                g.ArmorSlots = new List<string> { "equip_Helm", "equip_Armor", "equip_Gaunt", "equip_Leg" };
-                g.BaseStart = DS3BaseStart;
-                g.Classes = DS3Classes;
-                g.WeaponCategories = new Dictionary<int, EquipCategory>
-                {
-                    { 8, EquipCategory.UNSET },  // catalyst/talisman/flame - will be added separately
-                    { 10, EquipCategory.BOW },
-                    { 11, EquipCategory.BOW },
-                    { 13, EquipCategory.ARROW },
-                    { 14, EquipCategory.BOLT },
-                };
-                g.MagicTypes = new List<EquipCategory> { EquipCategory.SORCERY, EquipCategory.MIRACLE, EquipCategory.PYROMANCY };
-            }
-            else if (game.EldenRing)
-            {
-                g.Stats = new List<string> { "Vit", /* vigor */ "Wil" /* mind */, "End", "Str", "Dex", "Mag", "Fai", "Luc" /* arcane */ };
+                g.Stats = new List<string>
+                    { "Vit", /* vigor */ "Wil" /* mind */, "End", "Str", "Dex", "Mag", "Fai", "Luc" /* arcane */ };
                 g.ArmorSlots = new List<string> { "equip_Helm", "equip_Armer", "equip_Gaunt", "equip_Leg" };
                 g.BaseStart = EldenBaseStart;
                 g.Classes = EldenClasses;
                 g.WeaponCategories = new Dictionary<int, EquipCategory>
                 {
-                    { 8, EquipCategory.UNSET },  // Also magic-doers
+                    { 8, EquipCategory.UNSET }, // Also magic-doers
                     { 10, EquipCategory.BOW },
-                    { 11, EquipCategory.UNSET },  // Don't deal with crossbows
+                    { 11, EquipCategory.UNSET }, // Don't deal with crossbows
                     { 13, EquipCategory.ARROW },
                     { 14, EquipCategory.UNSET },
                 };
@@ -387,6 +396,7 @@ namespace RandomizerCommon
                         Console.WriteLine($"Warning: nonexistent {key} found in character equipment data");
                         continue;
                     }
+
                     EquipCategory mainCat = EquipCategory.WEAPON;
                     int weaponCategory = (byte)row["weaponCategory"].Value;
                     AddMulti(cats, weaponCategory, key);
@@ -394,44 +404,42 @@ namespace RandomizerCommon
                     {
                         mainCat = g.WeaponCategories[weaponCategory];
                     }
+
                     if ((byte)row["enableGuard"].Value == 1)
                     {
                         mainCat = EquipCategory.SHIELD;
                     }
+
                     if (mainCat == EquipCategory.BOW || mainCat == EquipCategory.ARROW || mainCat == EquipCategory.BOLT)
                     {
                         // Disable greatbow for starting - requirements too far off
-                        if (game.DS3)
-                        {
-                            if ((byte)row["DisableShoot"].Value == 1) continue;
-                        }
-                        else
-                        {
-                            // Who knows what this is in ER
-                            if (game.Name(key).Contains("Great")) continue;
-                        }
+                        // Who knows what this is in ER
+                        if (game.Name(key).Contains("Great")) continue;
                     }
+
                     if (mainCat == EquipCategory.BOW)
                     {
                         if ((byte)row["boltSlotEquipable"].Value == 1) crossbows.Add(key);
                     }
+
                     if (mainCat != EquipCategory.UNSET)
                     {
                         AddMulti(items, mainCat, key);
                     }
+
                     if ((byte)row["enableMagic"].Value == 1) AddMulti(items, EquipCategory.CATALYST, key);
                     if ((byte)row["enableMiracle"].Value == 1) AddMulti(items, EquipCategory.TALISMAN, key);
-                    if (game.DS3 && (byte)row["enablePyromancy"].Value == 1) AddMulti(items, EquipCategory.FLAME, key);
 
                     int str = (byte)row["properStrength"].Value;
                     // Add two hand adjustment for weapons. Note this doesn't work exactly for casting items, but does not affect casting.
                     // TODO: Double-check DS3 requirement here, the Elden Ring req was wrong for a while
                     if (twoHand
                         && (mainCat == EquipCategory.WEAPON || mainCat == EquipCategory.UNSET)
-                        && (game.DS3 ? (byte)row["Unk14"].Value == 0 : (byte)row["bothHandEquipable"].Value == 1 && (byte)row["isDualBlade"].Value == 0))
+                        && (byte)row["bothHandEquipable"].Value == 1 && (byte)row["isDualBlade"].Value == 0)
                     {
                         str = (int)Math.Ceiling(str / 1.5);
                     }
+
                     requirements[key] = new StatReq
                     {
                         Str = str,
@@ -450,6 +458,7 @@ namespace RandomizerCommon
                         Console.WriteLine($"Warning: nonexistent {key} found in character equipment data");
                         continue;
                     }
+
                     for (int i = 0; i < 4; i++)
                     {
                         if ((byte)row[g.ArmorTypes[i]].Value == 1)
@@ -465,6 +474,7 @@ namespace RandomizerCommon
                             {
                                 cat = EquipCategory.LEG;
                             }
+
                             // if (key.ID % 1000 != i * 100) Console.WriteLine($"Mismatched armor {game.Name(key)} has {g.ArmorTypes[i]}=1");
                             AddMulti(items, cat, key);
                             weights[key] = (float)row["weight"].Value;
@@ -493,14 +503,16 @@ namespace RandomizerCommon
                     }
                 }
             }
+
             // foreach (var v in cats) Console.WriteLine($"{v.Key}: {string.Join(", ", v.Value.Select(k => game.Name(k)))}");
             // Generate some armor sets. One downside of this approach is that each piece is represented only once -
             // but it is just one shuffle per category, and tends to result in a similar distribution to normal.
             List<List<ItemKey>> weightedArmors = new List<List<ItemKey>>();
             for (int i = 0; i < 4; i++)
             {
-                weightedArmors.Add(WeightedShuffle(random, items[ArmorCats[i]], item => 1/weights[item]));
+                weightedArmors.Add(WeightedShuffle(random, items[ArmorCats[i]], item => 1 / weights[item]));
             }
+
             List<ArmorSet> armors = new List<ArmorSet>();
             int maxArmors = weightedArmors.Select(rank => rank.Count).Min();
             for (int num = 0; num < maxArmors; num++)
@@ -512,8 +524,10 @@ namespace RandomizerCommon
                     armor.Ids[i] = item.ID;
                     armor.Weight += weights[item];
                 }
+
                 armors.Add(armor);
             }
+
             armors.Sort((a, b) => a.Weight.CompareTo(b.Weight));
 
             PARAM chara = game.Param("CharaInitParam");
@@ -538,27 +552,23 @@ namespace RandomizerCommon
                 140.5f, 141.5f, 142.6f, 143.6f, 144.6f, 145.6f, 146.7f, 147.7f, 148.7f, 149.7f,
                 150.8f, 151.8f, 152.8f, 153.8f, 154.9f, 155.9f, 156.9f, 157.9f, 159.0f, 160.0f,
             };
+
             float getMaxWeight(PARAM.Row row)
             {
-                if (game.DS3)
-                {
-                    return 40 + (sbyte)row["baseDurability"].Value;
-                }
-                else
-                {
-                    int end = (byte)row["baseEnd"].Value;
-                    return eldenWeights[end];
-                }
+                int end = (byte)row["baseEnd"].Value;
+                return eldenWeights[end];
             }
 
             for (int i = 0; i < 10; i++)
             {
                 if (opt["nostarting"]) break;
                 PARAM.Row row = chara[g.StartId + i];
+
                 int getStat(string name)
                 {
                     return game.EldenRing ? (int)(byte)row[name].Value : (sbyte)row[name].Value;
                 }
+
                 void setStat(string name, int val)
                 {
                     if (game.EldenRing)
@@ -570,12 +580,9 @@ namespace RandomizerCommon
                         row[name].Value = (sbyte)val;
                     }
                 }
+
                 // First, always fudge magic to 10, so that Orbeck quest is possible.
                 // This could alternatively be an ESD edit.
-                if (game.DS3 && getStat("baseMag") < 10)
-                {
-                    setStat("baseMag", 10);
-                }
                 if (cheat)
                 {
                     foreach (string stat in g.Stats) setStat($"base{stat}", 90);
@@ -585,11 +592,7 @@ namespace RandomizerCommon
                 CharacterClass chClass = g.Classes[i];
                 // In Elden Ring, everyone starts with 2
                 int attAmt = 2;
-                if (game.DS3)
-                {
-                    int attStat = getStat("baseWil");
-                    attAmt = attStat < 10 ? 0 : attStat < 14 ? 1 : 2;
-                }
+
                 StatReq chReqs = new StatReq
                 {
                     Str = getStat("baseStr"),
@@ -605,7 +608,8 @@ namespace RandomizerCommon
                 int attSlots = 0;
                 bool crossbowSelected = false;
                 if (printChars) Console.WriteLine($"Randomizing starting equipment for {chClass.Name}");
-                Dictionary<ItemKey, (EquipCategory, int)> selectedItems = new Dictionary<ItemKey, (EquipCategory, int)>();
+                Dictionary<ItemKey, (EquipCategory, int)> selectedItems =
+                    new Dictionary<ItemKey, (EquipCategory, int)>();
                 foreach (KeyValuePair<string, EquipCategory> entry in g.BaseStart.Concat(chClass.Start))
                 {
                     EquipCategory originalCat = entry.Value;
@@ -614,17 +618,22 @@ namespace RandomizerCommon
                     {
                         cat = EquipCategory.WEAPON;
                     }
+
                     // TODO: If a catalyst etc also doubles as a weapon, maybe skip its slot.
                     // This crossbow/bow logic relies on iteration order - try to make the order fixed...
-                    if ((cat == EquipCategory.ARROW && crossbowSelected) || (cat == EquipCategory.BOLT && !crossbowSelected)) continue;
+                    if ((cat == EquipCategory.ARROW && crossbowSelected) ||
+                        (cat == EquipCategory.BOLT && !crossbowSelected)) continue;
                     // Console.WriteLine(originalCat);
                     // Instead of using Distinct, could also make it a SortedSet. It's necessary because of normalization.
-                    Dictionary<ItemKey, int> statDiffs = items[cat].Distinct().ToDictionary(item => item, item => requirements[item].Eligible(dynamicReqs));
+                    Dictionary<ItemKey, int> statDiffs = items[cat].Distinct()
+                        .ToDictionary(item => item, item => requirements[item].Eligible(dynamicReqs));
                     List<ItemKey> candidates = items[cat];
-                    if (!opt["nohand"] && (cat == EquipCategory.SHIELD || chClass.Name == "Deprived" || chClass.Name == "Wretch" || !opt["changestats"]))
+                    if (!opt["nohand"] && (cat == EquipCategory.SHIELD || chClass.Name == "Deprived" ||
+                                           chClass.Name == "Wretch" || !opt["changestats"]))
                     {
                         candidates = candidates.Where(item => statDiffs[item] >= 0).ToList();
                     }
+
                     if (cat == EquipCategory.SORCERY || cat == EquipCategory.MIRACLE || cat == EquipCategory.PYROMANCY)
                     {
                         // Fit within attunement slots. Alternatively could increase attunement, but that unbalances things potentially.
@@ -634,8 +643,10 @@ namespace RandomizerCommon
                             row[entry.Key].Value = -1;
                             continue;
                         }
+
                         candidates = candidates.Where(item => attSlots + requirements[item].Att <= chReqs.Att).ToList();
                     }
+
                     // Select weapon and adjust stats if necessary
                     // This could just be WeightedChoice?
                     List<ItemKey> weightKeys = WeightedShuffle(random, candidates, item =>
@@ -665,6 +676,7 @@ namespace RandomizerCommon
                             StatReq req = requirements[item];
                             if (req.GetMaxStat() >= 20) weight = 0;
                         }
+
                         // Console.WriteLine($"{game.Name(item)}: {diff} -> {weight}");
                         return weight;
                     });
@@ -675,6 +687,7 @@ namespace RandomizerCommon
                             // Console.WriteLine($"{game.Name(key)}: stats {requirements[key]}, diff {statDiffs[key]}");
                         }
                     }
+
                     ItemKey selected = weightKeys[0];
                     items[cat].Remove(selected);
                     if (statDiffs[selected] < 0 && !opt["nohand"])
@@ -682,6 +695,7 @@ namespace RandomizerCommon
                         dynamicReqs.Adjust(requirements[selected]);
                         fudgeFactor *= -statDiffs[selected];
                     }
+
                     row[entry.Key].Value = selected.ID;
                     int quantity = 1;
                     if (originalCat == EquipCategory.DOUBLE_WEAPON)
@@ -689,14 +703,19 @@ namespace RandomizerCommon
                         row["equip_Wep_Left"].Value = selected.ID;
                         quantity = 2;
                     }
+
                     if (weights.ContainsKey(selected))
                     {
                         weaponWeight += quantity * weights[selected];
                     }
+
                     attSlots += requirements[selected].Att;
-                    if (printChars) Console.WriteLine($"  {entry.Key} is now {game.Name(selected)}, meets requirements by {statDiffs[selected]}");
+                    if (printChars)
+                        Console.WriteLine(
+                            $"  {entry.Key} is now {game.Name(selected)}, meets requirements by {statDiffs[selected]}");
                     selectedItems[selected] = (cat, opt["nohand"] ? statDiffs[selected] : 0);
                 }
+
                 // In Elden Ring, also change display characters, and add text descriptions
                 if (game.EldenRing)
                 {
@@ -704,12 +723,13 @@ namespace RandomizerCommon
                     {
                         PARAM.Row row2 = chara[3100 + i * 2 + j];
                         foreach (string field in g.BaseStart.Keys
-                            .Concat(chClass.Start.Keys)
-                            .Concat(g.Stats.Select(s => $"base{s}")))
+                                     .Concat(chClass.Start.Keys)
+                                     .Concat(g.Stats.Select(s => $"base{s}")))
                         {
                             row2[field].Value = row[field].Value;
                         }
                     }
+
                     List<(ItemKey, int)> showItems = selectedItems
                         .OrderByDescending(e => DescriptionPriority.IndexOf(e.Value.Item1))
                         .Select(e => (e.Key, e.Value.Item2))
@@ -730,9 +750,11 @@ namespace RandomizerCommon
                                 {
                                     itemName = useSpaces ? $"{itemName} ({diff})" : $"{itemName}（{diff}）";
                                 }
+
                                 itemStrs.Add(itemName);
                             }
                         }
+
                         if (chClass.Desc > 0)
                         {
                             string split = SplitCharacterText(useSpaces, itemStrs);
@@ -744,6 +766,7 @@ namespace RandomizerCommon
                         }
                     }
                 }
+
                 int statChange = dynamicReqs.Eligible(chReqs);
                 if (statChange < 0 && !opt["nohand"])
                 {
@@ -761,17 +784,22 @@ namespace RandomizerCommon
                         row["soulLvl"].Value = (short)((short)row["soulLvl"].Value - statChange);
                     }
                 }
+
                 // Armor time
                 float totalWeight = getMaxWeight(row);
-                List<ArmorSet> availableSets = armors.TakeWhile(armor => armor.Weight + weaponWeight < totalWeight * 0.69f).ToList();
+                List<ArmorSet> availableSets =
+                    armors.TakeWhile(armor => armor.Weight + weaponWeight < totalWeight * 0.69f).ToList();
                 if (availableSets.Count == 0) availableSets = new List<ArmorSet> { armors[0] };
                 ArmorSet selectedArmor = Choice(random, availableSets);
                 armors.Remove(selectedArmor);
                 if (printChars)
                 {
-                    Console.WriteLine($"  Armor: {string.Join(", ", selectedArmor.Ids.Select(id => game.Name(new ItemKey(ItemType.ARMOR, id))))}");
-                    Console.WriteLine($"  Weight: weapons {weaponWeight:0.##} + armor {selectedArmor.Weight:0.##} / {totalWeight:0.##} = {100 * (weaponWeight + selectedArmor.Weight) / totalWeight:0.##}%");
+                    Console.WriteLine(
+                        $"  Armor: {string.Join(", ", selectedArmor.Ids.Select(id => game.Name(new ItemKey(ItemType.ARMOR, id))))}");
+                    Console.WriteLine(
+                        $"  Weight: weapons {weaponWeight:0.##} + armor {selectedArmor.Weight:0.##} / {totalWeight:0.##} = {100 * (weaponWeight + selectedArmor.Weight) / totalWeight:0.##}%");
                 }
+
                 for (int j = 0; j < 4; j++)
                 {
                     if ((int)row[g.ArmorSlots[j]].Value != -1)
@@ -797,17 +825,18 @@ namespace RandomizerCommon
                                 reinforceId += 5;
                                 id += 5;
                             }
+
                             row[wep].Value = id;
                         }
                     }
                 }
             }
+
             if (printChars) Console.WriteLine();
 
             // Now, have fun with NPCs
             if (opt["nooutfits"]) return;
             // Just remove Symbol of Avarice first (may not matter with Irregulator, but those are more chaotic anyway)
-            if (game.DS3) armors.RemoveAll(set => set.Ids[0] == 78500000);
             Dictionary<int, ArmorSet> npcArmors = new Dictionary<int, ArmorSet>();
             Dictionary<string, int> npcNameRows = new Dictionary<string, int>();
             Func<ItemType, PARAM.Cell, float> cellWeight = (type, cell) =>
@@ -827,6 +856,7 @@ namespace RandomizerCommon
                 {
                     npcNameRows[name] = baseId = row.ID / 10;
                 }
+
                 if (!npcArmors.ContainsKey(baseId))
                 {
                     float weaponWeight = g.WeaponSlots.Select(slot => cellWeight(ItemType.WEAPON, row[slot])).Sum();
@@ -838,11 +868,15 @@ namespace RandomizerCommon
                     {
                         armorLimit = armors.Count - 1;
                     }
+
                     armorLimit = Math.Min(20, armorLimit);
                     npcArmors[baseId] = selectedArmor = armors[random.Next(armorLimit)];
                     armors.Remove(selectedArmor);
-                    if (printChars) Console.WriteLine($"Armor for {name}: {100 * weightLimit / totalWeight:0.##}% -> {100 * (selectedArmor.Weight + weaponWeight) / totalWeight:0.##}%: {string.Join(", ", selectedArmor.Ids.Select(id => game.Name(new ItemKey(ItemType.ARMOR, id))))}");
+                    if (printChars)
+                        Console.WriteLine(
+                            $"Armor for {name}: {100 * weightLimit / totalWeight:0.##}% -> {100 * (selectedArmor.Weight + weaponWeight) / totalWeight:0.##}%: {string.Join(", ", selectedArmor.Ids.Select(id => game.Name(new ItemKey(ItemType.ARMOR, id))))}");
                 }
+
                 selectedArmor = npcArmors[baseId];
                 for (int j = 0; j < 4; j++)
                 {
@@ -852,6 +886,7 @@ namespace RandomizerCommon
                     }
                 }
             }
+
             if (printChars) Console.WriteLine();
         }
 
@@ -872,8 +907,10 @@ namespace RandomizerCommon
                         row[g.ArmorSlots[i]].Value = item == null ? -1 : item.ID;
                     }
                 }
+
                 return;
             }
+
             try
             {
                 List<ItemKey> items = ParseOutfit(enemyLocs.Outfit);
@@ -895,7 +932,9 @@ namespace RandomizerCommon
                 return;
             }
 #endif
-            finally { }
+            finally
+            {
+            }
         }
 
         internal List<ItemKey> ParseOutfit(string outfit)
@@ -911,16 +950,20 @@ namespace RandomizerCommon
                     ret.Add(null);
                     continue;
                 }
+
                 ItemKey armor = game.ItemForName(name);
-                if (armor.Type != ItemType.ARMOR) throw new ArgumentException($"Invalid outfit specification contains non-armor: {outfit} index {i}");
+                if (armor.Type != ItemType.ARMOR)
+                    throw new ArgumentException($"Invalid outfit specification contains non-armor: {outfit} index {i}");
                 PARAM.Row item = game.Item(armor);
                 if (item == null) throw new ArgumentException($"Armor {armor} ({name}) missing from params");
                 if ((byte)item[g.ArmorTypes[i]].Value != 1 && armor.ID % 1000 != i * 100)
                 {
                     throw new ArgumentException($"Armor {armor} ({name}) is an invalid {g.ArmorTypes[i]}");
                 }
+
                 ret.Add(armor);
             }
+
             return ret;
         }
 
@@ -945,6 +988,7 @@ namespace RandomizerCommon
                     // This adds a space, trim it later if it matters
                     cand[cand.Count - 1] += delimeter;
                 }
+
                 // Japanese, Chinese, and Thai lack ascii spaces
                 // Otherwise, add one word at a time, also measuring the space before.
                 foreach (string token in item.Split(' ').Select((s, i) => (i == 0 ? "" : " ") + s))
@@ -960,17 +1004,21 @@ namespace RandomizerCommon
                         cand.Add(token.Trim(' '));
                     }
                 }
+
                 if (cand.Count > lineCount)
                 {
                     break;
                 }
+
                 committed = cand;
             }
+
             if (committed.Count == 0)
             {
                 // Make each item a line, hope it goes well
                 committed = items.Take(lineCount).ToList();
             }
+
             return string.Join("\n", committed.Select(t => t.Trim(' ')));
         }
 
@@ -993,12 +1041,15 @@ namespace RandomizerCommon
                     lineSizes.Add(size);
                 }
             }
+
             foreach (string line in new[] { "", " ", "some text", " some text" })
             {
                 int size = TextRenderer.MeasureText(line, f).Width;
                 Console.WriteLine($"[{line}] = {size}");
             }
-            Console.WriteLine($"Test: {SplitCharacterText(true, Enumerable.Repeat("Some Kind of Item Text", 20).ToList())}");
+
+            Console.WriteLine(
+                $"Test: {SplitCharacterText(true, Enumerable.Repeat("Some Kind of Item Text", 20).ToList())}");
             Console.WriteLine($"Lens: {string.Join(",", lineLens.OrderBy(x => x))}");
             Console.WriteLine($"Size: {string.Join(",", lineSizes.OrderBy(x => x))}");
         }

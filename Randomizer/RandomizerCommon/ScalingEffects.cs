@@ -391,7 +391,7 @@ namespace RandomizerCommon
         public SpEffectValues EditScalingSpEffects()
         {
             SpEffectValues ret = new SpEffectValues();
-            ScalingData d = game.Sekiro ? sekiroScaling : (game.EldenRing ? eldenScaling : ds3Scaling);
+            ScalingData d = eldenScaling;
             if (d.ScalingMatrix.Any(e => !d.ScalingFields.ContainsKey(e.Key) || e.Value.Count != d.SectionPairs.Count))
             {
                 throw new Exception($"Internal error: bad scaling values");
@@ -431,7 +431,6 @@ namespace RandomizerCommon
                             double val = d.ScalingMatrix[entry.Key][index];
                             // If scaling down, just take opposite of calculated difference. If scaling up, nerf a bit, since these numbers tend to come from simpler enemies.
                             if (invert) val = 1 / val;
-                            else if (game.Sekiro) val = val / 1.333333;
                             // Console.WriteLine($"{i}->{j} {entry.Key}: {val}");
                             foreach (string field in entry.Value)
                             {

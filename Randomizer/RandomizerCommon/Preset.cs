@@ -784,8 +784,7 @@ namespace RandomizerCommon
                 // Do not let some enemies be randomized at this point, many will prevent the game from being completeable.
                 if (info.Class == EnemyClass.None) continue;
                 // Don't do helpers by default in DS3, as many are nonfunctional on their own. Tags could be used to override this.
-                // In Sekiro, bossNames handles some cases like this.
-                if (!game.Sekiro && info.Class == EnemyClass.Helper && !info.HasTag("standalone")) continue;
+                if (info.Class == EnemyClass.Helper && !info.HasTag("standalone")) continue;
                 // Skip synthetic enemies from dupes, when creating pools
                 // This means they can't be used for the enemy mapping, but those ids are not stable anyway (need different config keying)
                 if (info.DupeFrom > 0) continue;
