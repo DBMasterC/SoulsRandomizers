@@ -13,23 +13,17 @@ namespace EldenRingRandomizer
         // https://stackoverflow.com/questions/7198639/c-sharp-application-both-gui-and-commandline
         [DllImport("kernel32.dll")]
         static extern bool AttachConsole(int dwProcessId);
+
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
+
         [DllImport("kernel32")]
         static extern bool FreeConsole();
 
         [STAThread]
         static void Main(string[] args)
         {
-            if (args.Contains("ac6"))
-            {
-                RandomizerOptions options = RandomizerOptions.Parse(args, FromGame.AC6);
-                string outPath = outPath = @"C:\Users\matt\Downloads\Mods\ModEngine-2.0.0-preview3-win64\ac6";
-                new Randomizer().Randomize(
-                    options, FromGame.AC6, status => Console.WriteLine("## " + status), outPath: outPath, preset: null, messages: null, gameExe: null);
-                return;
-            }
             if (args.Length > 0 && !args.Contains("/gui"))
             {
                 // If given command line args, go into command line mode.
@@ -41,27 +35,32 @@ namespace EldenRingRandomizer
                     GameData.RestoreBackupsInternal(restorePath);
                     return;
                 }
+
                 if (args.Contains("updatemessages"))
                 {
                     Messages.CopyExplanations(args);
                     return;
                 }
-                RandomizerOptions options = RandomizerOptions.Parse(args, FromGame.ER);
+
+                RandomizerOptions options = RandomizerOptions.Parse(args);
                 if (options.Seed == 0)
                 {
                     options.Seed = (uint)new Random().Next();
                 }
+
                 Messages messages = new Messages("diste");
                 Preset preset = null;
                 if (options.Preset != null)
                 {
                     preset = Preset.LoadPreset(options.Preset);
                 }
+
                 if (preset == null && File.Exists("DevER.txt"))
                 {
                     options.Preset = "DevER";
                     preset = Preset.LoadPreset("DevER", checkDir: ".");
                 }
+
                 string gameExe = @"C:\Program Files (x86)\Steam\steamapps\common\ELDEN RING\Game\eldenring.exe";
                 string outPath;
                 if (options["uxm"])
@@ -72,8 +71,10 @@ namespace EldenRingRandomizer
                 {
                     outPath = @"C:\Users\matt\Downloads\Mods\ModEngine-2.0.0-preview3-win64\randomizer";
                 }
+
                 new Randomizer().Randomize(
-                    options, FromGame.ER, status => Console.WriteLine("## " + status), outPath: outPath, preset: preset, messages: messages, gameExe: gameExe);
+                    options, status => Console.WriteLine("## " + status), outPath: outPath, preset: preset,
+                    messages: messages, gameExe: gameExe);
                 return;
             }
             else

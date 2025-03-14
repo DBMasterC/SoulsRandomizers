@@ -113,7 +113,7 @@ namespace RandomizerCommon
                 [3202900] = "Archdragon Start",  // Spawn point
             };
 
-            GameEditor editor = new GameEditor(GameSpec.FromGame.DS3);
+            GameEditor editor = new GameEditor();
             Dictionary<string, FMG> menuFMGs = editor.LoadBnd($@"{editor.Spec.GameDir}\msg\engus\menu_dlc2.msgbnd.dcx", (p, n) => FMG.Read(p));
 
             Dictionary<int, string> bonfireNames = new[] { "", "_dlc1", "_dlc2" }
@@ -2562,7 +2562,7 @@ namespace RandomizerCommon
                     }
                 },
             };
-            FMG bonfires = new GameEditor(GameSpec.FromGame.SDT).LoadBnd(@"C:\Program Files (x86)\Steam\steamapps\common\Sekiro\msg\engus\menu.msgbnd.dcx", (p, n) => FMG.Read(p))["NTC_\u30e1\u30cb\u30e5\u30fc\u30c6\u30ad\u30b9\u30c8"];
+            FMG bonfires = new GameEditor().LoadBnd(@"C:\Program Files (x86)\Steam\steamapps\common\Sekiro\msg\engus\menu.msgbnd.dcx", (p, n) => FMG.Read(p))["NTC_\u30e1\u30cb\u30e5\u30fc\u30c6\u30ad\u30b9\u30c8"];
             Dictionary<int, string> names = new Dictionary<int, string>();
             foreach (PARAM.Row r in game.Params["BonfireWarpParam"].Rows)
             {

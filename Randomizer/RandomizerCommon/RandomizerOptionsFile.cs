@@ -58,7 +58,7 @@ namespace RandomizerCommon
             {
                 throw new Exception($"Error: unsupported or unknown game \"{ret.Game}\" in options file");
             }
-            ret.OptionsValue = RandomizerOptions.Parse(ret.Options.Split(' '), FromGame.ER);
+            ret.OptionsValue = RandomizerOptions.Parse(ret.Options.Split(' '));
             if (ret.EnemyPreset != null && !string.IsNullOrWhiteSpace(ret.OptionsValue.Preset))
             {
                 ret.PresetValue = Preset.ParsePreset(ret.OptionsValue.Preset, ret.EnemyPreset);

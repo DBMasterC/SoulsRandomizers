@@ -197,10 +197,10 @@ namespace RandomizerCommon
 
         private List<string> writtenFiles = new List<string>();
 
-        public GameData(string dir, FromGame game)
+        public GameData(string dir)
         {
             Dir = dir;
-            Editor = new GameEditor(game);
+            Editor = new GameEditor();
             Editor.Spec.GameDir = $@"{dir}";
             Editor.Spec.NameDir = $@"{dir}\Names";
             if (EldenRing)

@@ -143,7 +143,7 @@ namespace RandomizerCommon
             }
             if (opt["dumpcons"])
             {
-                GameEditor g = new GameEditor(GameSpec.FromGame.ER);
+                GameEditor g = new GameEditor();
                 string formatCon(IEnumerable<byte> bytes) => "m" + string.Join("_", bytes.Select(b => b == 0xFF ? "XX" : $"{b:d2}"));
                 foreach (KeyValuePair<string, MSBE> entry in maps)
                 {
@@ -156,7 +156,7 @@ namespace RandomizerCommon
             }
             if (opt["dumpplayers"])
             {
-                GameEditor g = new GameEditor(GameSpec.FromGame.ER);
+                GameEditor g = new GameEditor();
                 Dictionary<string, FMG> itemFmg = g.LoadBnd($@"{g.Spec.GameDir}\msg\engus\item.msgbnd.dcx", (b, path) => FMG.Read(b));
                 Dictionary<string, FMG> menuFmg = g.LoadBnd($@"{g.Spec.GameDir}\msg\engus\menu.msgbnd.dcx", (b, path) => FMG.Read(b));
                 FMG placeFmg = itemFmg["PlaceName"];
@@ -217,7 +217,7 @@ namespace RandomizerCommon
             }
             if (opt["dumpchara"])
             {
-                GameEditor g = new GameEditor(GameSpec.FromGame.ER);
+                GameEditor g = new GameEditor();
                 Dictionary<string, FMG> itemFmg = g.LoadBnd($@"{g.Spec.GameDir}\msg\engus\item.msgbnd.dcx", (b, path) => FMG.Read(b));
                 FMG npcFmg = itemFmg["NpcName"];
                 SortedDictionary<int, SortedSet<string>> names = new SortedDictionary<int, SortedSet<string>>();
@@ -301,7 +301,7 @@ namespace RandomizerCommon
                     return mapId;
                 }
                 // Not sure if menu fmgs will be used in the randomizer so load from game dir
-                GameEditor g = new GameEditor(GameSpec.FromGame.ER);
+                GameEditor g = new GameEditor();
                 Dictionary<string, FMG> itemFmg = g.LoadBnd($@"{g.Spec.GameDir}\msg\engus\item.msgbnd.dcx", (b, path) => FMG.Read(b));
                 Dictionary<string, FMG> menuFmg = g.LoadBnd($@"{g.Spec.GameDir}\msg\engus\menu.msgbnd.dcx", (b, path) => FMG.Read(b));
                 FMG placeFmg = itemFmg["PlaceName"];

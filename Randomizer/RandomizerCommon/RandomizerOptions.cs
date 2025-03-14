@@ -15,7 +15,7 @@ namespace RandomizerCommon
         public RandomizerOptions Copy()
         {
             // Copies most things, except not the seed and preset (maybe can revisit this when revisiting DS3)
-            return new RandomizerOptions(Game)
+            return new RandomizerOptions()
             {
                 opt = new SortedDictionary<string, bool>(opt),
                 str = new SortedDictionary<string, string>(str),
@@ -29,37 +29,21 @@ namespace RandomizerCommon
 
         public static int EldenRingVersion = 10;
 
-        public RandomizerOptions(FromGame game)
+        public RandomizerOptions()
         {
-            Game = game;
-            // TODO: Less manual
-            if (game == FromGame.SDT)
+            int version = EldenRingVersion;
+            for (int i = 1; i < version; i++)
             {
-                opt["v1"] = false;
-                opt["v2"] = false;
-                opt["v3"] = false;
-                opt["v4"] = true;
+                opt[$"v{i}"] = false;
             }
-            else if (game == FromGame.DS3)
-            {
-                opt["v2"] = false;
-                opt["v3"] = false;
-                opt["v4"] = true;
-            }
-            else if (game == FromGame.ER)
-            {
-                int version = EldenRingVersion;
-                for (int i = 1; i < version; i++)
-                {
-                    opt[$"v{i}"] = false;
-                }
-                opt[$"v{version}"] = true;
-            }
+
+            opt[$"v{version}"] = true;
         }
 
-        public static RandomizerOptions Parse(IEnumerable<string> args, FromGame game, Predicate<string> optionsFilter = null)
+        public static RandomizerOptions Parse(IEnumerable<string> args, 
+            Predicate<string> optionsFilter = null)
         {
-            RandomizerOptions options = new RandomizerOptions(game);
+            RandomizerOptions options = new RandomizerOptions();
             uint seed = 0;
             uint seed2 = 0;
             int difficulty = 0;
@@ -77,6 +61,7 @@ namespace RandomizerCommon
                 {
                     op = null;
                 }
+
                 if (op == "preset")
                 {
                     preset.Add(arg);
@@ -95,6 +80,7 @@ namespace RandomizerCommon
                     {
                         seed2 = num;
                     }
+
                     numIndex++;
                 }
                 else if (arg.Contains(":"))
@@ -108,6 +94,7 @@ namespace RandomizerCommon
                     options[arg] = true;
                 }
             }
+
             options.Difficulty = difficulty;
             options.Seed = seed;
             options.Seed2 = seed2;
@@ -116,16 +103,19 @@ namespace RandomizerCommon
                 options.Difficulty = val;
                 options.str.Remove("bias");
             }
+
             if (options.str.TryGetValue("seed", out valStr) && uint.TryParse(valStr, out uint uval))
             {
                 options.Seed = uval;
                 options.str.Remove("seed");
             }
+
             if (options.str.TryGetValue("seed2", out valStr) && uint.TryParse(valStr, out uval))
             {
                 options.Seed2 = uval;
                 options.str.Remove("seed2");
             }
+
             if (preset.Count > 0) options.Preset = string.Join(" ", preset);
             return options;
         }
@@ -139,6 +129,7 @@ namespace RandomizerCommon
                     name = "no" + name.Substring(6);
                     return !(opt.ContainsKey(name) ? opt[name] : false);
                 }
+
                 return opt.ContainsKey(name) ? opt[name] : false;
             }
             set
@@ -182,7 +173,8 @@ namespace RandomizerCommon
         public int Difficulty
         {
             get { return difficulty; }
-            set {
+            set
+            {
                 difficulty = Math.Max(0, Math.Min(100, value));
                 // Linear scaling for these params, from 0 to 1. But severity may depend on game
                 if (Game == FromGame.ER)
@@ -200,6 +192,7 @@ namespace RandomizerCommon
                     num["keyitemdifficulty"] = FromRange(20, 60);
                     num["allitemdifficulty"] = FromRange(0, 80);
                 }
+
                 // This one is a multiplicative weight, but important for distributing key items throughout the game.
                 float key;
                 if (difficulty == 0) key = 1;
@@ -235,7 +228,8 @@ namespace RandomizerCommon
         // Boolean options which apply (not mapped options)
         public SortedSet<string> GetLogicOptions()
         {
-            return new SortedSet<string>(opt.Where(e => e.Value && !logiclessOptions.Contains(e.Key)).Select(e => e.Key));
+            return new SortedSet<string>(
+                opt.Where(e => e.Value && !logiclessOptions.Contains(e.Key)).Select(e => e.Key));
         }
 
         public SortedSet<string> GetOptions()
@@ -259,16 +253,21 @@ namespace RandomizerCommon
                     result += Game == FromGame.ER ? $" seed2:{Seed2}" : $" {Seed2}";
                 }
             }
+
             if (!string.IsNullOrEmpty(Preset) && includePreset)
             {
                 result += $" --preset {Preset}";
             }
+
             return result;
         }
 
         public string FullString() => ConfigString(includeSeed: true, includePreset: true, onlyLogic: false);
         public string LogicString() => ConfigString(includeSeed: true, includePreset: false, onlyLogic: true);
         public override string ToString() => ConfigString(includeSeed: true, includePreset: true, onlyLogic: false);
-        public string ConfigHash() => (Util.JavaStringHash(ConfigString(includeSeed: false, includePreset: true, onlyLogic: true)) % 99999).ToString().PadLeft(5, '0');
+
+        public string ConfigHash() =>
+            (Util.JavaStringHash(ConfigString(includeSeed: false, includePreset: true, onlyLogic: true)) % 99999)
+            .ToString().PadLeft(5, '0');
     }
 }

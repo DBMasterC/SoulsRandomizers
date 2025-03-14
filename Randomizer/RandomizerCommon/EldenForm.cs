@@ -31,7 +31,7 @@ namespace RandomizerCommon
         private Messages messages;
         private ModRunner Runner;
 
-        private RandomizerOptions options = new RandomizerOptions(FromGame.ER);
+        private RandomizerOptions options = new RandomizerOptions();
         private string defaultOpts = null;
         private Dictionary<string, string> originalLabels = new Dictionary<string, string>();
         private bool simultaneousUpdate;
@@ -81,7 +81,7 @@ namespace RandomizerCommon
             enemyseed.GotFocus += enemyseed_TextChanged;
             enemyseed.LostFocus += enemyseed_TextChanged;
 
-            RandomizerOptions initialOpts = new RandomizerOptions(FromGame.ER);
+            RandomizerOptions initialOpts = new RandomizerOptions();
             SetControlFlags(this, initialOpts);
             initialOpts.Difficulty = 20;
             defaultOpts = initialOpts.FullString();
@@ -210,7 +210,7 @@ namespace RandomizerCommon
                 return false;
             }
             List<string> previousOpts = defaultOpts.Split(' ').ToList();
-            options = RandomizerOptions.Parse(previousOpts, FromGame.ER, isValidOption);
+            options = RandomizerOptions.Parse(previousOpts, isValidOption);
 
             // New defaults. Just in case no version, choose not to do anything.
             int prevVersion = RandomizerOptions.EldenRingVersion;
@@ -996,7 +996,7 @@ namespace RandomizerCommon
                 {
                     MergedMods mods = MergedMods.FromPath(mergemod.Text);
                     randomizer.Randomize(
-                        rand, FromGame.ER, status => { statusL.Text = status; },
+                        rand,  status => { statusL.Text = status; },
                         messages: messages, preset: selectedPreset,
                         gameExe: exe.Text, modDirs: mods);
                     if (!rand["uxm"])

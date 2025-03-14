@@ -12,11 +12,10 @@ namespace RandomizerCommon
 {
     public partial class MainForm : Form
     {
-        
         private static readonly string enemySeedPlaceholder = "(same as overall seed)";
 
         private Messages messages = new Messages(null);
-        private RandomizerOptions options = new RandomizerOptions(FromGame.DS3);
+        private RandomizerOptions options = new RandomizerOptions();
         private string defaultOpts = null;
         private HashSet<string> previousOpts = new HashSet<string>();
         private bool simultaneousUpdate;
@@ -35,13 +34,14 @@ namespace RandomizerCommon
             {
                 SetWarning();
             }
+
             SetStatus(null);
             presetL.Text = "";
             enemyseed.GotFocus += enemyseed_TextChanged;
             enemyseed.LostFocus += enemyseed_TextChanged;
 
             // The rest of initialization
-            RandomizerOptions initialOpts = new RandomizerOptions(FromGame.DS3);
+            RandomizerOptions initialOpts = new RandomizerOptions();
             SetControlFlags(this, initialOpts);
             defaultOpts = initialOpts.FullString();
 
@@ -60,6 +60,7 @@ namespace RandomizerCommon
                     defaultReroll.Checked = false;
                 }
             }
+
             // defaultRerollEnemy.Checked = defaultReroll.Checked && options.Seed2 != 0;
             SetStatus(null);
 
@@ -71,14 +72,16 @@ namespace RandomizerCommon
         {
             HashSet<string> validOptions = new HashSet<string>();
             GetAllControlNames(this, validOptions);
+
             bool isValidOption(string s)
             {
                 if (validOptions.Contains(s)) return true;
                 if (uint.TryParse(s, out _)) return true;
                 return false;
             }
+
             previousOpts = new HashSet<string>(defaultOpts.Split(' '));
-            options = RandomizerOptions.Parse(previousOpts, FromGame.DS3, isValidOption);
+            options = RandomizerOptions.Parse(previousOpts, isValidOption);
 
             // New defaults
             if (previousOpts.Contains("v2") || previousOpts.Contains("v3"))
@@ -145,6 +148,7 @@ namespace RandomizerCommon
             {
                 msg = $"Created by thefifthmatt. Current config hash: {options.ConfigHash()}";
             }
+
             statusL.Text = msg;
             statusStrip1.BackColor = error ? Color.IndianRed : (success ? Color.PaleGreen : SystemColors.Control);
         }
@@ -169,6 +173,7 @@ namespace RandomizerCommon
             {
                 return;
             }
+
             SetControlFlags(this);
             UpdateEnabled();
             UpdateLabels();
@@ -256,6 +261,7 @@ namespace RandomizerCommon
             Dictionary<Control, bool> toEnable = new Dictionary<Control, bool>();
             MassEnable(toEnable, this, "item", "itemPage");
             MassEnable(toEnable, this, "enemy", "enemyPage");
+
             // Individual updates
             void setCheck(Control control, bool enabled, bool defaultState, bool disabledState, string overrideDisable)
             {
@@ -264,6 +270,7 @@ namespace RandomizerCommon
                 {
                     toEnable[control] = enabled;
                 }
+
                 // Generalizing across control types, was it worth it :')
                 CheckBox check = control as CheckBox;
                 RadioButton radio = control as RadioButton;
@@ -280,7 +287,9 @@ namespace RandomizerCommon
                     else radio.Checked = defaultState;
                     changes = true;
                 }
-            };
+            }
+
+            ;
             setCheck(earlydlc, options["dlc1"], false, false, "item");
             setCheck(dlc2fromdlc1, options["dlc1"] && options["dlc2"], true, false, "item");
             setCheck(racemode_health, options["racemode"], false, false, "item");
@@ -289,15 +298,18 @@ namespace RandomizerCommon
                 defaultHealth.Checked = true;
                 changes = true;
             }
+
             if (!racemode.Checked && !norandom.Checked)
             {
                 defaultKey.Checked = true;
                 changes = true;
             }
+
             foreach (KeyValuePair<Control, bool> enable in toEnable)
             {
                 enable.Key.Enabled = enable.Value;
             }
+
             enemyseed_TextChanged(null, null);
             randomize.Enabled = (options["enemy"] || options["item"]) && !error;
             if (changes) SetControlFlags(this);
@@ -310,15 +322,21 @@ namespace RandomizerCommon
             if (options.GetNum("veryunfairweight") > 0.5) unfairText = " and very unfair";
             else if (options.GetNum("unfairweight") > 0.5) unfairText = " and unfair";
             string loc;
-            if (options.GetNum("allitemdifficulty") > 0.7) loc = $"Much better rewards for difficult and late{unfairText} locations.";
-            else if (options.GetNum("allitemdifficulty") > 0.3) loc = $"Better rewards for difficult and late{unfairText} locations.";
-            else if (options.GetNum("allitemdifficulty") > 0.1) loc = $"Slightly better rewards for difficult and late{unfairText} locations.";
+            if (options.GetNum("allitemdifficulty") > 0.7)
+                loc = $"Much better rewards for difficult and late{unfairText} locations.";
+            else if (options.GetNum("allitemdifficulty") > 0.3)
+                loc = $"Better rewards for difficult and late{unfairText} locations.";
+            else if (options.GetNum("allitemdifficulty") > 0.1)
+                loc = $"Slightly better rewards for difficult and late{unfairText} locations.";
             else if (options.GetNum("allitemdifficulty") > 0.001) loc = "Most locations for items are equally likely.";
             else loc = "All possible locations for items are equally likely.";
             string chain;
-            if (options.GetNum("keyitemchainweight") <= 3) chain = "Key items will usually be easy to find and not require much side content.";
-            else if (options.GetNum("keyitemchainweight") <= 4.001) chain = "Key items will usually be in different areas and depend on each other.";
-            else if (options.GetNum("keyitemchainweight") <= 10) chain = "Key items will usually be in different areas and form interesting chains.";
+            if (options.GetNum("keyitemchainweight") <= 3)
+                chain = "Key items will usually be easy to find and not require much side content.";
+            else if (options.GetNum("keyitemchainweight") <= 4.001)
+                chain = "Key items will usually be in different areas and depend on each other.";
+            else if (options.GetNum("keyitemchainweight") <= 10)
+                chain = "Key items will usually be in different areas and form interesting chains.";
             else chain = "Key items will usually form long chains across different areas.";
             if (options["norandom"]) chain = "";
             difficultyL.Text = $"{loc}\r\n{chain}";
@@ -331,15 +349,19 @@ namespace RandomizerCommon
                 if (options.GetNum("allitemdifficulty") > 0.3) weaponText = "May be more difficult than base game";
                 else if (options.GetNum("allitemdifficulty") < 0.2) weaponText = "Easier than base game";
             }
+
             if (!options["estusprogression"])
             {
-                if (options.GetNum("allitemdifficulty") > 0.5) estusText = "You will get almost no estus upgrades until the very end of the game";
+                if (options.GetNum("allitemdifficulty") > 0.5)
+                    estusText = "You will get almost no estus upgrades until the very end of the game";
                 else if (options.GetNum("allitemdifficulty") > 0.15) estusText = "More difficult than base game";
             }
+
             if (!options["soulsprogression"])
             {
                 soulsText = "Easier than base game";
             }
+
             weaponprogressionL.Text = weaponText;
             estusprogressionL.Text = estusText;
             soulsprogressionL.Text = soulsText;
@@ -351,6 +373,7 @@ namespace RandomizerCommon
                 dancerWeapon = "+3 to +5";
             }
             else if (options["middancer"]) dancerLevel = "medium";
+
             if (!options["weaponprogression"]) dancerWeapon = "no guaranteed";
             earlylothricL.Text = $"May require Dancer at {dancerLevel} soul level with {dancerWeapon} weapon";
             string friedeEstus = options["estusprogression"] ? "most" : "no guaranteed";
@@ -361,8 +384,10 @@ namespace RandomizerCommon
                 friedeLevel = "medium";
                 friedeWeapon = "+7";
             }
+
             if (!options["weaponprogression"]) friedeWeapon = "no guaranteed";
-            earlydlcL.Text = $"May require Friede at {friedeLevel} soul level, {friedeEstus} estus, and {friedeWeapon} weapon";
+            earlydlcL.Text =
+                $"May require Friede at {friedeLevel} soul level, {friedeEstus} estus, and {friedeWeapon} weapon";
 
             chests.Text = "Turn all chests into mimics" + (options["mimics"] ? " (randomized)" : "");
         }
@@ -389,8 +414,10 @@ namespace RandomizerCommon
             {
                 options.Seed = (uint)seedRandom.Next();
             }
+
             bool newEnemySeed = false;
-            if (defaultRerollEnemy.Enabled && !defaultRerollEnemy.Checked && enemyseed.Text.Trim() != "" && enemyseed.Text != enemySeedPlaceholder)
+            if (defaultRerollEnemy.Enabled && !defaultRerollEnemy.Checked && enemyseed.Text.Trim() != "" &&
+                enemyseed.Text != enemySeedPlaceholder)
             {
                 if (uint.TryParse(enemyseed.Text.Trim(), out uint seed))
                 {
@@ -411,6 +438,7 @@ namespace RandomizerCommon
             {
                 options.Seed2 = 0;
             }
+
             SaveOptions();
             RandomizerOptions rand = options.Copy();
             working = true;
@@ -425,22 +453,27 @@ namespace RandomizerCommon
             }
 
             Randomizer randomizer = new Randomizer();
-            await Task.Factory.StartNew(() => {
+            await Task.Factory.StartNew(() =>
+            {
                 Directory.CreateDirectory("spoiler_logs");
                 string seed2 = rand.Seed2 == 0 || rand.Seed2 == rand.Seed ? "" : $"_{rand.Seed2}";
-                string runId = $"{DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss")}_log_{rand.Seed}{seed2}_{rand.ConfigHash()}.txt";
+                string runId =
+                    $"{DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss")}_log_{rand.Seed}{seed2}_{rand.ConfigHash()}.txt";
                 TextWriter log = File.CreateText($@"spoiler_logs\{runId}");
                 TextWriter stdout = Console.Out;
                 Console.SetOut(log);
                 try
                 {
-                    randomizer.Randomize(rand, SoulsIds.GameSpec.FromGame.DS3, status => { statusL.Text = status; }, preset: selectedPreset, encrypted: encrypted);
-                    SetStatus($"Done! Hints and spoilers in spoiler_logs directory as {runId} - Restart your game!!", success: true);
+                    randomizer.Randomize(rand,  status => { statusL.Text = status; },
+                        preset: selectedPreset, encrypted: encrypted);
+                    SetStatus($"Done! Hints and spoilers in spoiler_logs directory as {runId} - Restart your game!!",
+                        success: true);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
-                    SetError($"Error encountered: {ex.Message}\r\nIt may work to try again with a different seed. See most recent file in spoiler_logs directory for the full error.");
+                    SetError(
+                        $"Error encountered: {ex.Message}\r\nIt may work to try again with a different seed. See most recent file in spoiler_logs directory for the full error.");
                     SetStatus($"Error! Partial log in spoiler_logs directory as {runId}", true);
                 }
                 finally
@@ -474,11 +507,13 @@ namespace RandomizerCommon
                     {
                         text = defaultOpts;
                     }
+
                     if (string.IsNullOrEmpty(text) || int.TryParse(text, out var _) || !text.Contains("v"))
                     {
                         SetStatus("Invalid options string", error: true);
                         return;
                     }
+
                     SetOptionsString(text);
                     if (options.Seed != 0) defaultReroll.Checked = false;
 
@@ -491,6 +526,7 @@ namespace RandomizerCommon
         }
 
         private Preset selectedPreset;
+
         private void preset_Click(object sender, EventArgs e)
         {
             using (PresetForm presetForm = new PresetForm("dist"))
@@ -533,11 +569,13 @@ namespace RandomizerCommon
                 enemyseed.Text = "";
                 enemyseed.ForeColor = SystemColors.WindowText;
             }
+
             if (!enemyseed.Focused && string.IsNullOrWhiteSpace(enemyseed.Text))
             {
                 enemyseed.Text = enemySeedPlaceholder;
                 enemyseed.ForeColor = SystemColors.GrayText;
             }
+
             // Manage checkbox
             if (enemyseed.Text == enemySeedPlaceholder || enemyseed.Text == "")
             {
@@ -545,6 +583,7 @@ namespace RandomizerCommon
                 defaultRerollEnemy.Enabled = enemyseed.Enabled;
                 return;
             }
+
             string text = enemyseed.Text.Trim();
             bool valid = uint.TryParse(text, out uint val) && val != 0;
             if (defaultReroll.Checked)
@@ -555,6 +594,7 @@ namespace RandomizerCommon
                     defaultRerollEnemy.Checked = true;
                 }
             }
+
             reroll_CheckedChanged(null, null);
         }
 
