@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using RefactorCommon;
 using SoulsFormats;
 using SoulsIds;
 using YamlDotNet.Serialization;
@@ -80,9 +81,9 @@ namespace RandomizerCommon
                 if (groupIDs.Count > 0) extra += $" group {string.Join(",", groupIDs)}";
                 return extra;
             }
-            if (opt["dumpid"])
+            if (opt[BooleanOption.DumpId])
             {
-                if (opt["html"]) WriteHTMLHeader("Elden Ring Entity ID List");
+                if (opt[BooleanOption.Html]) WriteHTMLHeader("Elden Ring Entity ID List");
                 foreach (KeyValuePair<string, MSBE> entry in maps)
                 {
                     MSBE msb = entry.Value;
@@ -91,7 +92,7 @@ namespace RandomizerCommon
                     if (game.LocationNames.TryGetValue(mapId, out string mapName)) mapSuffix = $" ({mapName})";
                     foreach (MSBE.Part part in msb.Parts.GetEntries())
                     {
-                        if (opt["dumpall"] || part.EntityID > 0 || part.EntityGroupIDs.Any(g => g > 100 && g != 34116150 && g != 34116160))
+                        if (opt[BooleanOption.DumpAll] || part.EntityID > 0 || part.EntityGroupIDs.Any(g => g > 100 && g != 34116150 && g != 34116160))
                         {
                             int charaId = part is MSBE.Part.EnemyBase e ? e.CharaInitID : 0;
                             Console.WriteLine($"{part.EntityID}: {mapId} {part.Name}{mapSuffix} {part.GetType().Name} ({game.ModelCharacterName(getModelName(part.Name), charaId)}){partDetails(part, false)}");
@@ -99,23 +100,23 @@ namespace RandomizerCommon
                     }
                     foreach (MSBE.Region region in msb.Regions.GetEntries())
                     {
-                        if (opt["dumpall"] || region.EntityID > 1000)
+                        if (opt[BooleanOption.DumpAll] || region.EntityID > 1000)
                         {
                             Console.WriteLine($"{region.EntityID}: {entry.Key}{mapSuffix} {region.GetType().Name} {region.Name}");
                         }
                     }
                     foreach (MSBE.Event ev in msb.Events.GetEntries())
                     {
-                        if (opt["dumpall"] || ev.EntityID > 1000)
+                        if (opt[BooleanOption.DumpAll] || ev.EntityID > 1000)
                         {
                             Console.WriteLine($"{ev.EntityID}: {entry.Key}{mapSuffix} {ev.GetType().Name} {ev.Name}");
                         }
                     }
                 }
             }
-            if (opt["dumpchr"])
+            if (opt[BooleanOption.DumpChr])
             {
-                if (opt["html"]) WriteHTMLHeader("Elden Ring Enemy Locations List");
+                if (opt[BooleanOption.Html]) WriteHTMLHeader("Elden Ring Enemy Locations List");
                 SortedDictionary<string, SortedSet<string>> chrs = new SortedDictionary<string, SortedSet<string>>();
                 foreach (KeyValuePair<string, MSBE> entry in maps)
                 {
@@ -141,7 +142,7 @@ namespace RandomizerCommon
                     }
                 }
             }
-            if (opt["dumpcons"])
+            if (opt[BooleanOption.DumpCons])
             {
                 GameEditor g = new GameEditor();
                 string formatCon(IEnumerable<byte> bytes) => "m" + string.Join("_", bytes.Select(b => b == 0xFF ? "XX" : $"{b:d2}"));
@@ -154,7 +155,7 @@ namespace RandomizerCommon
                     }
                 }
             }
-            if (opt["dumpplayers"])
+            if (opt[BooleanOption.DumpPlayers])
             {
                 GameEditor g = new GameEditor();
                 Dictionary<string, FMG> itemFmg = g.LoadBnd($@"{g.Spec.GameDir}\msg\engus\item.msgbnd.dcx", (b, path) => FMG.Read(b));
@@ -215,7 +216,7 @@ namespace RandomizerCommon
                 // (clock facing is a decimal number from 0 to 12, starting from north in clockwise order).
                 // All map players are in the listed map, even if they are closer to a landmark in a different map.
             }
-            if (opt["dumpchara"])
+            if (opt[BooleanOption.DumpChara])
             {
                 GameEditor g = new GameEditor();
                 Dictionary<string, FMG> itemFmg = g.LoadBnd($@"{g.Spec.GameDir}\msg\engus\item.msgbnd.dcx", (b, path) => FMG.Read(b));
@@ -245,7 +246,7 @@ namespace RandomizerCommon
                     Console.WriteLine($"{entry.Key} {string.Join(" | ", entry.Value)}");
                 }
             }
-            if (opt["dumpflag"])
+            if (opt[BooleanOption.DumpFlag])
             {
                 foreach (KeyValuePair<string, EMEVD> entry in game.Emevds)
                 {
@@ -274,7 +275,7 @@ namespace RandomizerCommon
                     }
                 }
             }
-            if (opt["dumpname"])
+            if (opt[BooleanOption.DumpName])
             {
                 List<string> nonMaps = new List<string>
                 {
@@ -325,7 +326,7 @@ namespace RandomizerCommon
                         AddMulti(cats, row.ID, subName);
                     }
                     AddMulti(cats, row.ID, name);
-                    if (opt["dumpbonfire"]) Console.WriteLine($"{row.ID} {string.Join("; ", cats[row.ID])}");
+                    if (opt[BooleanOption.DumpBonfire]) Console.WriteLine($"{row.ID} {string.Join("; ", cats[row.ID])}");
                 }
                 Dictionary<uint, List<string>> bonfires = new Dictionary<uint, List<string>>();
                 Dictionary<string, List<uint>> mapBonfires = new Dictionary<string, List<uint>>();
@@ -341,7 +342,7 @@ namespace RandomizerCommon
                     }
                     AddMulti(bonfires, obj, name);
                     string mapId = formatMap(game.GetMapParts(row));
-                    if (opt["dumpbonfire"]) Console.WriteLine($"{row.ID} {mapId}: {string.Join(" - ", bonfires[obj])}");
+                    if (opt[BooleanOption.DumpBonfire]) Console.WriteLine($"{row.ID} {mapId}: {string.Join(" - ", bonfires[obj])}");
                     // if (misplacedMapBonfires.Contains(obj)) continue;
                     AddMulti(mapBonfires, mapId, obj);
                 }
@@ -382,7 +383,7 @@ namespace RandomizerCommon
                     }
                     string fullName = $"{name} ({typeStr})";
                     AddMulti(mapMarkers, mapId, fullName);
-                    if (opt["dumpbonfire"])
+                    if (opt[BooleanOption.DumpBonfire])
                     {
                         bool hasBonfire = bonfires.Any(b => b.Value.Last() == name);
                         Console.WriteLine($"{row.ID}: Bonfire {hasBonfire}: {(MarkerType)type} ({name} - {mapId})");
@@ -392,7 +393,7 @@ namespace RandomizerCommon
                 {
                     return amt == 1 ? $"{amt} {thing}" : $"{amt} {thing}s";
                 }
-                if (opt["structure"])
+                if (opt[BooleanOption.Structure])
                 {
                     bool unknownTodo = false;
                     // For m10 m20 legacy dungeons, define basic names. For m30 range, use obj bonfires (or manual names otherwise)
@@ -527,7 +528,7 @@ namespace RandomizerCommon
                         printNames(prefix, "Site of Grace", "Sites of Grace", names);
                         usedBonfires.UnionWith(ids);
                     }
-                    bool nest = !opt["flat"];
+                    bool nest = !opt[BooleanOption.Flat];
                     bool wiki = true;
                     string mapAnchor(string map)
                     {

@@ -71,7 +71,19 @@ public enum BooleanOption
     Reflot,
     DumpMapFragments,
     DumpShop,
-    DumpSpells
+    DumpSpells,
+    DumpId,
+    DumpAll,
+    DumpChr,
+    DumpCons,
+    DumpPlayers,
+    DumpChara,
+    DumpFlag,
+    DumpName,
+    DumpBonfire,
+    Structure,
+    Flat,
+    MatStats
 }
 
 public enum StringOption

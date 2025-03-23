@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RefactorCommon;
 using SoulsFormats;
 using static RandomizerCommon.AnnotationData;
 using static RandomizerCommon.LocationData;
@@ -137,7 +138,7 @@ namespace RandomizerCommon
                 }
             }
             int modelCount = locations.Count;
-            if (opt["matstats"])
+            if (opt[BooleanOption.MatStats])
             {
                 Dictionary<string, int> counts = new Dictionary<string, int>();
                 foreach (AssetPart part in locations)
@@ -213,7 +214,7 @@ namespace RandomizerCommon
                     mapping[locPart] = itemPart;
                 }
             }
-            if (opt["matstats"])
+            if (opt[BooleanOption.MatStats])
             {
                 Dictionary<string, List<string>> placeMaps = new Dictionary<string, List<string>>();
                 foreach ((AssetPart location, AssetPart model) in mapping)

@@ -112,7 +112,7 @@ namespace RandomizerCommon
                     Console.WriteLine(
                         $"{game.DisplayName(assign.Key.Item)}: {ann.GetLocationHint(assign.Value, permutation.SpecialLocation(scope))}");
                     hasHint = true;
-                    if (opt["fullhint"])
+                    if ([NumericOption.KeyItemDifficulty]"fullhint"])
                     {
                         Console.WriteLine($"- {ann.GetLocationDescription(assign.Value)}");
                     }
