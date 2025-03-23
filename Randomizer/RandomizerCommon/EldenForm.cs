@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using RandomizerCommon.Properties;
+using RefactorCommon;
 using YamlDotNet.Serialization;
 using static RandomizerCommon.Messages;
 using SoulsIds;
@@ -229,36 +230,36 @@ namespace RandomizerCommon
 
             if (prevVersion < 3)
             {
-                options["weaponprogression"] = true;
+                options[BooleanOption.WeaponProgression] = true;
             }
 
             if (prevVersion < 4)
             {
-                options["enemy"] = true;
-                options["scale"] = true;
-                options["editnames"] = true;
+                options[BooleanOption.Enemy] = true;
+                options[BooleanOption.Scale] = true;
+                options[BooleanOption.EditName] = true;
                 // options["regularhp"] = true;
                 // options["bosshp"] = true;
             }
 
             if (prevVersion < 7)
             {
-                options["phasehp"] = true;
+                options[BooleanOption.PhaseHp] = true;
             }
 
             if (prevVersion < 9)
             {
-                options["bossbgm"] = true;
+                options[BooleanOption.BossBgm] = true;
             }
 
             if (prevVersion < 10)
             {
-                options["swaprewards"] = false;
-                if (options["nohand"]) options["changestats"] = false;
+                options[BooleanOption.SwapRewards] = false;
+                if (options[BooleanOption.NoHand]) options[BooleanOption.ChangeStats] = false;
             }
 
             // Misc required options
-            options["racemode"] = true;
+            options[BooleanOption.RaceMode] = true;
 
             simultaneousUpdate = true;
             InsertControlFlags(this);
@@ -303,7 +304,7 @@ namespace RandomizerCommon
         private void SetWarning()
         {
             bool fatal = !MiscSetup.CheckRequiredEldenFiles(messages, out string err)
-                         || MiscSetup.CheckEldenRingMods(messages, options["uxm"], exe.Text, out err);
+                         || MiscSetup.CheckEldenRingMods(messages, options[BooleanOption.Uxm], exe.Text, out err);
             SetError(err, fatal);
         }
 
@@ -780,22 +781,22 @@ namespace RandomizerCommon
             ;
 
             // As of 0.6, more combination of options should work, with some racemode location heuristics in AnnotationData.
-            setCheck(night, options["raceloc_altboss"], false, false, "item");
-            setCheck(markitems, options["markareas"], false, false, "item");
+            setCheck(night, options[BooleanOption.RaceLoc_AltBoss], false, false, "item");
+            setCheck(markitems, options[BooleanOption.MarkAreas], false, false, "item");
             // No key item options when key items are not randomized
-            setCheck(earlylegacy, !options["norandom"], true, true, "item");
-            setComboBox(runes_leyndell, !options["norandom"], "2", "item");
-            setComboBox(runes_rold, !options["norandom"], "--", "item");
+            setCheck(earlylegacy, options[BooleanOption.Random], true, true, "item");
+            setComboBox(runes_leyndell, options[BooleanOption.Random], "2", "item");
+            setComboBox(runes_rold, options[BooleanOption.Random], "--", "item");
             // Scaling options
             // No longer includes customization options
-            setCheck(phasehp, options["scale"], true, false, "enemy");
+            setCheck(phasehp, options[BooleanOption.Scale], true, false, "enemy");
             setSimpleEnable(presetButton, selectedPreset != null, "enemy");
             // Misc
-            setCheck(default_twohand, !options["nostarting"], true, true, null);
-            setCheck(onehand, !options["nostarting"], false, false, null);
-            setCheck(nohand, !options["nostarting"], false, false, null);
-            setCheck(changestats, !options["nostarting"] && !options["nohand"], true, false, null);
-            setCheck(crawl, options["fog"], false, false, null);
+            setCheck(default_twohand, !options[BooleanOption.NoStarting], true, true, null);
+            setCheck(onehand, !options[BooleanOption.NoStarting], false, false, null);
+            setCheck(nohand, !options[BooleanOption.NoStarting], false, false, null);
+            setCheck(changestats, !options[BooleanOption.NoStarting] && !options[BooleanOption.NoHand], true, false, null);
+            setCheck(crawl, options[BooleanOption.Fog], false, false, null);
             // Universal options not in the misc tab
             toEnable[language] = true;
             toEnable[languageL] = true;
@@ -833,7 +834,7 @@ namespace RandomizerCommon
             }
 
             enemyseed_TextChanged(null, null);
-            randomize.Enabled = (options["enemy"] || options["item"]) && !error;
+            randomize.Enabled = (options[BooleanOption.Enemy] || options[BooleanOption.Item]) && !error;
             if (changes) SetControlFlags(this);
             UpdateLaunchGame();
             simultaneousUpdate = false;
@@ -841,7 +842,7 @@ namespace RandomizerCommon
 
         private void UpdateLaunchGame()
         {
-            launchButton.Enabled = Runner.IsValid() && !options["uxm"];
+            launchButton.Enabled = Runner.IsValid() && !options[BooleanOption.Uxm];
         }
 
         private static readonly Dictionary<string, (int, int)> checkLabels = new Dictionary<string, (int, int)>
@@ -893,16 +894,16 @@ namespace RandomizerCommon
             // if (options[NumericOption.VeryUnfairWeight] > 0.5) unfairText = " and very unfair";
             // else if (options[NumericOption.UnfairWeight] > 0.5) unfairText = " and unfair";
             Text loc;
-            if (options[NumericOption.AllitemDifficulty] > 0.7) loc = allitem3;
-            else if (options[NumericOption.AllitemDifficulty] > 0.3) loc = allitem2;
-            else if (options[NumericOption.AllitemDifficulty] > 0.001) loc = allitem1;
+            if (options[NumericOption.AllItemDifficulty] > 0.7) loc = allitem3;
+            else if (options[NumericOption.AllItemDifficulty] > 0.3) loc = allitem2;
+            else if (options[NumericOption.AllItemDifficulty] > 0.001) loc = allitem1;
             else loc = allitem0;
             Text chain;
             if (options[NumericOption.KeyItemChainWeight] <= 3) chain = keyitem0;
             else if (options[NumericOption.KeyItemChainWeight] <= 4.001) chain = keyitem1;
             else if (options[NumericOption.KeyItemChainWeight] <= 10) chain = keyitem2;
             else chain = keyitem3;
-            if (options["norandom"]) chain = null;
+            if (!options[BooleanOption.Random]) chain = null;
             difficultyL.Text = $"{messages.Get(loc)}\r\n{messages.Get(chain)}";
             difficultyAmtL.Text = $"{options.Difficulty}%";
 
@@ -915,7 +916,7 @@ namespace RandomizerCommon
                         originalLabels[label.Name] = originalText = label.Text;
                     }
 
-                    int count = options["nocaves"] && val.Item2 > 0 ? val.Item2 : val.Item1;
+                    int count = options[BooleanOption.NoCaves] && val.Item2 > 0 ? val.Item2 : val.Item1;
                     label.Text = originalText.Replace("{0}", $"{count}");
                 }
                 else
@@ -1055,7 +1056,7 @@ namespace RandomizerCommon
                         rand, status => { statusL.Text = status; },
                         messages: messages, preset: selectedPreset,
                         gameExe: exe.Text, modDirs: mods);
-                    if (!rand["uxm"])
+                    if (!rand[BooleanOption.Uxm])
                     {
                         CreateLaunchFile();
                     }
@@ -1732,7 +1733,7 @@ namespace RandomizerCommon
             UpdateLaunchGame();
             if (!launchButton.Enabled || Runner.IsLaunching()) return;
 
-            if (options["fog"])
+            if (options[BooleanOption.Fog])
             {
                 MessageBox.Show(
                     messages.Get(launchFog), messages.Get(launchFailedTitle),

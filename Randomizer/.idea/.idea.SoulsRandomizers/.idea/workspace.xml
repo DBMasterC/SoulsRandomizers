@@ -9,16 +9,12 @@
   <component name="ChangeListManager">
     <list default="true" id="dd41ca92-765f-472f-98ff-04a36d186dbd" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.SoulsRandomizers/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SoulsRandomizers/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/AnnotationData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/AnnotationData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/HintMarker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/HintMarker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/HintWriter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/HintWriter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/KeyItemsPermutation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/KeyItemsPermutation.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EldenRingRandomizer/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EldenRingRandomizer/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomizerCommon/EldenForm.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/EldenForm.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RandomizerCommon/MainForm.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/MainForm.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RandomizerCommon/MiscSetup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/MiscSetup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/Permutation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/Permutation.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/PermutationWriter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/PermutationWriter.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RandomizerCommon/Randomizer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/Randomizer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/ReverseEnemyOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/ReverseEnemyOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomizerCommon/RandomizerOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/RandomizerOptions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RefactorCommon/Keys.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RefactorCommon/Keys.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SoulsIds" beforeDir="false" afterPath="$PROJECT_DIR$/../SoulsIds" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SoulsIds/SoulsIds/BhdExtractor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../SoulsIds/SoulsIds/BhdExtractor.cs" afterDir="false" />
@@ -103,7 +99,7 @@
       <workItem from="1723241059308" duration="190000" />
       <workItem from="1741730948885" duration="3485000" />
       <workItem from="1741904580735" duration="4508000" />
-      <workItem from="1742753951953" duration="7340000" />
+      <workItem from="1742753951953" duration="7930000" />
     </task>
     <servers />
   </component>

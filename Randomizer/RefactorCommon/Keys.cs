@@ -2,35 +2,13 @@
 
 public enum BooleanOption
 {
-    /// <summary>
-    /// I assume
-    /// </summary>
-    ItemRandomization,
-    /// <summary>
-    /// I assume
-    /// </summary>
-    EnemyRandomization,
-    /// <summary>
-    /// ???
-    /// </summary>
+    Item,
+    Enemy,
     Mimics,
-    /// <summary>
-    /// ???
-    /// </summary>
     Lizards,
-    /// <summary>
-    /// ???
-    /// </summary>
     EarlyReq,
-    /// <summary>
-    /// ???
-    /// </summary>
     Scale,
-    /// <summary>
-    /// ???
-    /// </summary>
     EditText,
-
     OverrideDisable,
     Dlc1,
     Dlc2,
@@ -135,7 +113,11 @@ public enum BooleanOption
     Trivial,
     OutMaps,
     EnemyArea,
-    OutEnemy
+    OutEnemy,
+    EditName,
+    PhaseHp,
+    BossBgm,
+    SwapRewards
 }
 
 public enum StringOption

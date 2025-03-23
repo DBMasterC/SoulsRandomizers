@@ -584,7 +584,7 @@ namespace RandomizerCommon
                     }
                     // Add permanent shop placement flags. Also.... abuse this for headless ape bestowal lot, if enemy rando is enabled.
                     // Slight hack to ignore this for specific preset
-                    if (opt[BooleanOption.EnemyRandomization] && opt[BooleanOption.Bosses] && commonInit)
+                    if (opt[BooleanOption.Enemy] && opt[BooleanOption.Bosses] && commonInit)
                     {
                         entry.Value.Events[0].Instructions.Add(new EMEVD.Instruction(2000, 0, new List<object> { maxPermSlot + 1, (uint)750, (uint)9307, (uint)9314 }));
                     }

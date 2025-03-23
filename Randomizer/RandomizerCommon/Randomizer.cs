@@ -136,13 +136,13 @@ namespace RandomizerCommon
             if (header)
             {
                 if (game.HasMods) Console.WriteLine();
-                if (opt[BooleanOption.EnemyRandomization])
+                if (opt[BooleanOption.Enemy])
                 {
                     Console.WriteLine(
                         "Ctrl+F 'Boss placements' or 'Miniboss placements' or 'Basic placements' to see enemy placements.");
                 }
 
-                if (opt[BooleanOption.ItemRandomization])
+                if (opt[BooleanOption.Item])
                 {
                     Console.WriteLine(
                         "Ctrl+F 'Hints' to see item placement hints, or Ctrl+F for a specific item name.");
@@ -167,7 +167,7 @@ namespace RandomizerCommon
             if (game.EldenRing)
             {
 #if DEBUG
-                if (!opt[BooleanOption.ItemRandomization])
+                if (!opt[BooleanOption.Item])
                 {
                     new EldenDataPrinter().PrintData(game, opt);
                     return;
@@ -181,7 +181,7 @@ namespace RandomizerCommon
                 LocationData data = null;
                 PermutationWriter.Result permResult = null;
                 CharacterWriter characters = null;
-                if (opt[BooleanOption.ItemRandomization])
+                if (opt[BooleanOption.Item])
                 {
                     notify?.Invoke(messages.Get(itemPhase));
                     EventConfig itemEventConfig;
@@ -259,7 +259,7 @@ namespace RandomizerCommon
                     characters.Write(random, opt);
                 }
 
-                if (opt[BooleanOption.EnemyRandomization])
+                if (opt[BooleanOption.Enemy])
                 {
                     notify?.Invoke(messages.Get(enemyPhase));
 

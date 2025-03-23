@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using RandomizerCommon;
+using RefactorCommon;
 using static SoulsIds.GameSpec;
 
 namespace EldenRingRandomizer
@@ -63,7 +64,7 @@ namespace EldenRingRandomizer
 
                 string gameExe = @"C:\Program Files (x86)\Steam\steamapps\common\ELDEN RING\Game\eldenring.exe";
                 string outPath;
-                if (options["uxm"])
+                if (options[BooleanOption.Uxm])
                 {
                     outPath = Path.GetDirectoryName(gameExe);
                 }

@@ -87,8 +87,8 @@ namespace RandomizerCommon
             // New defaults
             if (previousOpts.Contains("v2") || previousOpts.Contains("v3"))
             {
-                options[BooleanOption.ItemRandomization] = true;
-                options[BooleanOption.EnemyRandomization] = true;
+                options[BooleanOption.Item] = true;
+                options[BooleanOption.Enemy] = true;
                 options[BooleanOption.Mimics] = true;
                 options[BooleanOption.Lizards] = true;
                 options[BooleanOption.EarlyReq] = true;
@@ -312,7 +312,7 @@ namespace RandomizerCommon
             }
 
             enemyseed_TextChanged(null, null);
-            randomize.Enabled = (options[BooleanOption.EnemyRandomization] || options[BooleanOption.ItemRandomization]) && !error;
+            randomize.Enabled = (options[BooleanOption.Enemy] || options[BooleanOption.Item]) && !error;
             if (changes) SetControlFlags(this);
             simultaneousUpdate = false;
         }

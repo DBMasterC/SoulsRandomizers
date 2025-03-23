@@ -42,7 +42,7 @@ namespace RandomizerCommon
             Predicate<string> optionsFilter = null)
         {
             //db todo - just make this json, geeze.
-            
+
             // RandomizerOptions options = new RandomizerOptions();
             // uint seed = 0;
             // uint seed2 = 0;
@@ -225,18 +225,19 @@ namespace RandomizerCommon
         // }
 
         // Options which are purely aesthetic or related to installation
-        private static HashSet<string> logiclessOptions = new HashSet<string> { "mergemods", "uxm", "bossbgm" };
+        private static HashSet<BooleanOption> logiclessOptions = new ()
+            { BooleanOption.MergeMods, BooleanOption.Uxm, BooleanOption.BossBgm };
 
         // Boolean options which apply (not mapped options)
-        public SortedSet<string> GetLogicOptions()
+        public SortedSet<BooleanOption> GetLogicOptions()
         {
-            return new SortedSet<string>(
+            return new SortedSet<BooleanOption>(
                 _booleanOptions.Where(e => e.Value && !logiclessOptions.Contains(e.Key)).Select(e => e.Key));
         }
 
-        public SortedSet<string> GetOptions()
+        public SortedSet<BooleanOption> GetOptions()
         {
-            return new SortedSet<string>(_booleanOptions.Where(e => e.Value).Select(e => e.Key));
+            return new SortedSet<BooleanOption>(_booleanOptions.Where(e => e.Value).Select(e => e.Key));
         }
 
         public string ConfigString(bool includeSeed = false, bool includePreset = false, bool onlyLogic = true)
