@@ -326,7 +326,7 @@ namespace RandomizerCommon
                 }
                 // TODO: Before full customization, find a way to add items to norandom slots.
                 // Until then, we may need to add some extra slots to fit all racemode items.
-                if (options[BooleanOption.RaceMode_Upgrades] && options[BooleanOption.NoRandom]
+                if (options[BooleanOption.RaceMode_Upgrades] && !options[BooleanOption.Random]
                     && !options[BooleanOption.RaceLoc_Health] && !options[BooleanOption.RaceLoc_AltBoss] && !options[BooleanOption.RaceLoc_Talisman])
                 {
                     RaceModeTags.Add("upgradeshop");

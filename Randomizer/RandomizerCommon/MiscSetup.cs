@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using RefactorCommon;
 using SoulsIds;
 using SoulsFormats;
 using static SoulsIds.Events;
@@ -495,7 +496,7 @@ namespace RandomizerCommon
                 }
             }
             // Easier verification for enemy randomizer stuff
-            if (opt["cheat_shortcut"])
+            if (opt[BooleanOption.CheatShortcut])
             {
                 // Various shortcut flags
                 List<int> flags = new List<int>
@@ -533,7 +534,7 @@ namespace RandomizerCommon
             ParamDictionary Params = game.Params;
 
             // Snap (for convenience, but can also softlock the player)
-            if (opt["snap"]) Params["EquipParamGoods"][3980]["goodsUseAnim"].Value = (sbyte)84;
+            if (opt[BooleanOption.Snap]) Params["EquipParamGoods"][3980]["goodsUseAnim"].Value = (sbyte)84;
             // No tutorials
             if (Params.ContainsKey("MenuTutorialParam")) Params["MenuTutorialParam"].Rows = Params["MenuTutorialParam"].Rows.Where(r => r.ID == 0).ToList();
             // Memos pop up and don't just disappear mysteriously
@@ -552,7 +553,7 @@ namespace RandomizerCommon
                 20006200,
             };
             // Slowless slow walk
-            if (opt["headlesswalk"]) deleteEvents.Add(20005431);
+            if (opt[BooleanOption.HeadlessWalk]) deleteEvents.Add(20005431);
 
             foreach (KeyValuePair<string, EMEVD> entry in game.Emevds)
             {
@@ -583,7 +584,7 @@ namespace RandomizerCommon
                     }
                     // Add permanent shop placement flags. Also.... abuse this for headless ape bestowal lot, if enemy rando is enabled.
                     // Slight hack to ignore this for specific preset
-                    if (opt["enemy"] && opt["bosses"] && commonInit)
+                    if (opt[BooleanOption.EnemyRandomization] && opt[BooleanOption.Bosses] && commonInit)
                     {
                         entry.Value.Events[0].Instructions.Add(new EMEVD.Instruction(2000, 0, new List<object> { maxPermSlot + 1, (uint)750, (uint)9307, (uint)9314 }));
                     }
@@ -619,7 +620,7 @@ namespace RandomizerCommon
                 998410, // Budding Cave Moss
                 998420, // Crystal Cave Moss
             };
-            if (opt["nerfmalenia"])
+            if (opt[BooleanOption.NerfMalania])
             {
                 foreach (PARAM.Row row in game.Params["SpEffectParam"].Rows)
                 {
@@ -634,14 +635,14 @@ namespace RandomizerCommon
             PARAM.Row gargNerf = game.AddRow("SpEffectParam", gargId, 20003);
             gargNerf["changeHpRate"].Value = 0f;
             gargNerf["changeHpPoint"].Value = 0;
-            if (opt["nerfgargoyles"])
+            if (opt[BooleanOption.NerfGargoyles])
             {
                 foreach (PARAM.Row row in game.Params["AtkParam_Npc"].Rows.Where(r => r.ID == 4770860 || r.ID == 4770451))
                 {
                     row["atkMag"].Value = (ushort)0;
                 }
             }
-            if (opt["sombermode"])
+            if (opt[BooleanOption.SomberMode])
             {
                 foreach (PARAM.Row row in game.Params["EquipMtrlSetParam"].Rows)
                 {
@@ -654,7 +655,7 @@ namespace RandomizerCommon
                     }
                 }
             }
-            if (opt["nerfsh"])
+            if (opt[BooleanOption.NerfSerpentHunter])
             {
                 PARAM.Row row = game.Params["EquipParamWeapon"][17030000];
                 // Change Serpent-Hunter to match Meteorite Staff
@@ -686,7 +687,7 @@ namespace RandomizerCommon
                     }
                 }
             }
-            if (opt["weaponreqs"])
+            if (opt[BooleanOption.WeaponReqs])
             {
                 // Same fields used in CharacterWriter requirements gathering
                 List<string> weaponFields = new List<string> { "properStrength", "properAgility", "properMagic", "properFaith", "properLuck" };
@@ -706,7 +707,7 @@ namespace RandomizerCommon
                     }
                 }
             }
-            if (!opt["noenvbgm"])
+            if (opt[BooleanOption.EnvBgm])
             {
                 // Some maps e.g. m34_12 Sealed Tunnel have a SoundRegion with BGM.
                 // BgmPlaceInfo=320 (Tunnel), EnvPlaceInfo=340 (Tower), Region=180 (Tutorial?)
@@ -745,7 +746,7 @@ namespace RandomizerCommon
             // 71801 is graveyard flag, 102 is "definitely in limgrave"?
             // This one should be opening the graveyard exit but it seems to activate straight away (because endif tutorial?)
             int mapUnlockFlag = 18000021;
-            if (opt["allmaps"])
+            if (opt[BooleanOption.AllMaps])
             {
                 var npcNames = game.ItemFMGs["NpcName"];
                 HashSet<int> merchantNames = new HashSet<int>(
@@ -825,7 +826,7 @@ namespace RandomizerCommon
                         }
                     }
 #if DEBUG
-                    if (entry.Key == "m12_02_00_00" && opt["cheat_shortcut"])
+                    if (entry.Key == "m12_02_00_00" && opt[BooleanOption.CheatShortcut])
                     {
                         if (e.ID == 12022609 || e.ID == 12022629)
                         {
@@ -869,7 +870,7 @@ namespace RandomizerCommon
                     // game.Params["ItemLotParam_map"][34110080]["lotItemId01"].Value = 8151;
                     // giftAmounts[new ItemKey(ItemType.GOOD, 20760)] = 10; // Mushroom
                     // giftAmounts[new ItemKey(ItemType.GOOD, 20651)] = 10; // Trina Lily
-                    if (opt["cheatgift"] && giftAmounts.Count > 0)
+                    if (opt[BooleanOption.CheatGift] && giftAmounts.Count > 0)
                     {
                         int lotId = 12020840;
                         PARAM.Row row = null;
@@ -907,7 +908,7 @@ namespace RandomizerCommon
                             new EMEVD.Instruction(2003, 4, new List<object> { 12020840 }),
                         });
                     }
-                    if (opt["cheathp"])
+                    if (opt[BooleanOption.CheatHp])
                     {
                         addNewEvent(19003107, new List<EMEVD.Instruction>
                         {
@@ -926,7 +927,7 @@ namespace RandomizerCommon
                             new EMEVD.Instruction(1000, 4, new List<object> { (byte)1 }),
                         });
                     }
-                    if (opt["bonfire"])
+                    if (opt[BooleanOption.Bonfire])
                     {
                         List<EMEVD.Instruction> instrs = new List<EMEVD.Instruction>();
                         foreach (PARAM.Row row in game.Params["BonfireWarpParam"].Rows)
@@ -956,7 +957,7 @@ namespace RandomizerCommon
                         new EMEVD.Instruction(2003, 66, new List<object> { (byte)0, 3198, (byte)1 }),
                     });
 
-                    if (opt["allmaps"])
+                    if (opt[BooleanOption.AllMaps])
                     {
                         // Event 1600 does map gifts, but just piggyback on item flags
                         // Mapping from item id to item flag. For now though just use map-activated flags directly...
@@ -1004,7 +1005,7 @@ namespace RandomizerCommon
                         }
                     }
 
-                    if (opt["fog"])
+                    if (opt[BooleanOption.Fog])
                     {
                         addNewEvent(19003112, new List<EMEVD.Instruction>
                         {
@@ -1019,11 +1020,11 @@ namespace RandomizerCommon
                     game.WriteEmevds.Add(entry.Key);
                 }
                 int endRunes = 0;
-                if (opt["runereq"])
+                if (opt[BooleanOption.RuneReq])
                 {
                     endRunes = 7;
                 }
-                else if (opt.GetStringAsInt("runes_end", 1, 7, out int runeOpt))
+                else if (opt.GetStringAsInt(StringOption.Runes_End, 1, 7, out int runeOpt))
                 {
                     endRunes = runeOpt;
                 }
@@ -1149,11 +1150,11 @@ namespace RandomizerCommon
         public static void UpdateEldenRing(GameData game, RandomizerOptions opt)
         {
             string gameDir = @"C:\Program Files (x86)\Steam\steamapps\common\ELDEN RING\Game";
-            if (opt["undcx"])
+            if (opt[BooleanOption.Undcx])
             {
                 Console.WriteLine("Map");
                 game.UnDcx(gameDir + @"\map\mapstudio");
-                if (opt["unasset"])
+                if (opt[BooleanOption.UnAsset])
                 {
                     HashSet<string> badAssets = new HashSet<string> { "AEG099_660", "AEG099_720", "AEG099_721", "AEG099_723" };
                     foreach (string path in Directory.GetFiles(gameDir + @"\map\mapstudio", "*.msb.dcx"))
@@ -1172,7 +1173,7 @@ namespace RandomizerCommon
                 }
                 return;
             }
-            if (opt["itemname"])
+            if (opt[BooleanOption.ItemName])
             {
                 void printNames(string paramName, FMGX fmg)
                 {
@@ -1282,7 +1283,7 @@ namespace RandomizerCommon
             {
                 Console.WriteLine($"Deleted {unused}");
             }
-            bool wetrun = opt["wetrun"];
+            bool wetrun = opt[BooleanOption.WetRun];
             string drySuffix = wetrun ? "" : " (dryrun)";
             foreach ((string next, string prev) in copy)
             {

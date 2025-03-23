@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RefactorCommon;
 using static RandomizerCommon.AnnotationData;
 using static RandomizerCommon.LocationData;
 using static RandomizerCommon.Util;
@@ -51,7 +52,7 @@ namespace RandomizerCommon
                 // Elden Ring has dynamic conditions which are hard to genericize logic for, so fill those in here.
                 // runes_leyndell, runes_rold, runes_rold_event can be replaced. runes_end is also dynamic, but does not affect logic.
                 List<string> runes;
-                if (options["norandom"])
+                if (!options[BooleanOption.Random])
                 {
                     // Use vanilla ordering or else we may have late-game Great Runes being required to enter Leyndell
                     runes = ann.Items.Keys.Where(i => i.StartsWith("rune")).ToList();
@@ -63,17 +64,17 @@ namespace RandomizerCommon
                 }
                 if (explain) Console.WriteLine($"Order of required Great Runes: {string.Join(", ", runes)}");
                 int leyndellRunes = 2;
-                if (options.GetStringAsInt("runes_leyndell", 0, 7, out int runeOpt))
+                if (options.GetStringAsInt(StringOption.Runes_Leyndell, 0, 7, out int runeOpt))
                 {
                     leyndellRunes = runeOpt;
                 }
                 int roldRunes = -1;
-                if (options.GetStringAsInt("runes_rold", 0, 7, out runeOpt))
+                if (options.GetStringAsInt(StringOption.Runes_Rold, 0, 7, out runeOpt))
                 {
                     roldRunes = runeOpt;
                 }
                 // Logic-only "free rune". This might be sensible to do given high bias and rune count.
-                if (options["runebuffer"])
+                if (options[BooleanOption.RuneBuffer])
                 {
                     leyndellRunes = Math.Min(leyndellRunes + 1, 7);
                     if (roldRunes >= 0)
@@ -97,7 +98,7 @@ namespace RandomizerCommon
                     // This is used for Until logic and redundant to mountaintops access condition, so blank it out if not a single item anymore.
                     configExprs["runes_rold_event"] = Expr.TRUE;
                 }
-                if (options["fog"] && ann.ItemGroups.TryGetValue("nofogaccess", out List<ItemKey> fogItems))
+                if (options[BooleanOption.Fog] && ann.ItemGroups.TryGetValue("nofogaccess", out List<ItemKey> fogItems))
                 {
                     // For fog gate randomizer (currently Elden Ring only), override the above.
                     // Also ignore keys unless the locked area is not accessible by gates/warps.
@@ -389,7 +390,7 @@ namespace RandomizerCommon
             }
 
             Dictionary<string, string> forcemap = new Dictionary<string, string>();
-            if (options["norandom"])
+            if (!options[BooleanOption.Random])
             {
                 foreach (string item in itemOrder)
                 {
@@ -473,7 +474,7 @@ namespace RandomizerCommon
                 ret.Assign[itemKey] = new HashSet<string> { selected };
                 // Areas should include events there. Except for bell charm being dropped by chained ogre, if that option is enabled
                 // todo: check this works okay with racemode key items, and nothing else randomized.
-                if (!(item == "younglordsbellcharm" && options["earlyhirata"]))
+                if (!(item == "younglordsbellcharm" && options[BooleanOption.EarlyHirata]))
                 {
                     if (ann.AreaEvents.TryGetValue(selected, out List<string> events)) ret.Assign[itemKey].UnionWith(events);
                 }
@@ -504,7 +505,7 @@ namespace RandomizerCommon
             // The last placed item has the highest priority
             ret.Priority.Reverse();
             // Academy Glintstone Key is not a key in crawl mode but it needs to be at Loretta with min locations and earlylegacy
-            if (options["crawl"] && options["earlylegacy"] && !ret.Priority.Contains(new ItemKey(ItemType.GOOD, 8109)))
+            if (options[BooleanOption.Crawl] && options[BooleanOption.EarlyLegacy] && !ret.Priority.Contains(new ItemKey(ItemType.GOOD, 8109)))
             {
                 ret.Priority.Add(new ItemKey(ItemType.GOOD, 8109));
             }
@@ -539,7 +540,7 @@ namespace RandomizerCommon
                 }
                 ret.IncludedAreas[name] = result;
                 return result;
-            };
+            }
             foreach (Node node in nodes.Values)
             {
                 getIncludedAreas(node.Name, new List<string>());

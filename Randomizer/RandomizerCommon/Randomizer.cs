@@ -6,6 +6,7 @@ using YamlDotNet.Serialization;
 using static RandomizerCommon.Messages;
 using static SoulsIds.GameSpec;
 using System.Collections.Generic;
+using RefactorCommon;
 
 namespace RandomizerCommon
 {
@@ -48,7 +49,7 @@ namespace RandomizerCommon
             {
                 // From Release/Debug dirs
                 distDir = $@"..\..\..\{distDir}";
-                opt["dryrun"] = true;
+                opt[BooleanOption.DryRun] = true;
             }
 
             if (!Directory.Exists(distDir))
@@ -58,14 +59,14 @@ namespace RandomizerCommon
 
             if (outPath == null)
             {
-                outPath = opt["uxm"]
+                outPath = opt[BooleanOption.Uxm]
                     ? Path.GetDirectoryName(gameExe)
                     : Directory.GetCurrentDirectory();
             }
 
             bool header = true;
 #if DEV
-            header = !opt.GetOptions().Any(o => o.StartsWith("dump")) && !opt["configgen"];
+            header = !opt.GetOptions().Any(o => o.StartsWith("dump")) && !opt[BooleanOption.ConfigGen];
 #endif
             if (!header)
             {
@@ -82,7 +83,7 @@ namespace RandomizerCommon
 
             notify?.Invoke(messages.Get(loadPhase));
 
-            if (opt["mergemods"])
+            if (opt[BooleanOption.MergeMods])
             {
                 // Previous Elden Ring UXM merge behavior
                 // modDir = Path.GetDirectoryName(gameExe);
@@ -115,7 +116,7 @@ namespace RandomizerCommon
             game.Load(modDirs);
 
 #if DEBUG
-            if (opt["update"])
+            if (opt[BooleanOption.Update])
             {
                 MiscSetup.UpdateEldenRing(game, opt);
                 return;
@@ -135,13 +136,13 @@ namespace RandomizerCommon
             if (header)
             {
                 if (game.HasMods) Console.WriteLine();
-                if (opt["enemy"])
+                if (opt[BooleanOption.EnemyRandomization])
                 {
                     Console.WriteLine(
                         "Ctrl+F 'Boss placements' or 'Miniboss placements' or 'Basic placements' to see enemy placements.");
                 }
 
-                if (opt["item"])
+                if (opt[BooleanOption.ItemRandomization])
                 {
                     Console.WriteLine(
                         "Ctrl+F 'Hints' to see item placement hints, or Ctrl+F for a specific item name.");
@@ -166,7 +167,7 @@ namespace RandomizerCommon
             if (game.EldenRing)
             {
 #if DEBUG
-                if (opt["noitem"])
+                if (!opt[BooleanOption.ItemRandomization])
                 {
                     new EldenDataPrinter().PrintData(game, opt);
                     return;
@@ -180,7 +181,7 @@ namespace RandomizerCommon
                 LocationData data = null;
                 PermutationWriter.Result permResult = null;
                 CharacterWriter characters = null;
-                if (opt["item"])
+                if (opt[BooleanOption.ItemRandomization])
                 {
                     notify?.Invoke(messages.Get(itemPhase));
                     EventConfig itemEventConfig;
@@ -190,8 +191,8 @@ namespace RandomizerCommon
                         itemEventConfig = deserializer.Deserialize<EventConfig>(reader);
                     }
 
-                    EldenCoordinator coord = new EldenCoordinator(game, opt["debugcoords"]);
-                    if (opt["dumpcoords"])
+                    EldenCoordinator coord = new EldenCoordinator(game, opt[BooleanOption.DebugCoords]);
+                    if (opt[BooleanOption.DumpCoords])
                     {
                         coord.DumpJS(game);
                         return;
@@ -199,20 +200,20 @@ namespace RandomizerCommon
 
                     EldenLocationDataScraper scraper = new EldenLocationDataScraper();
                     data = scraper.FindItems(game, coord, opt);
-                    if (data == null || opt["dumplot"] || opt["dumpitemflag"])
+                    if (data == null || opt[BooleanOption.DumpLot] || opt[BooleanOption.DumpItemFlag])
                     {
                         return;
                     }
 
                     AnnotationData ann = new AnnotationData(game, data);
                     ann.Load(opt);
-                    if (opt["dumpann"])
+                    if (opt[BooleanOption.DumpAnn])
                     {
-                        ann.Save(initial: false, filter: opt["annfilter"], coord: coord);
+                        ann.Save(initial: false, filter: opt[BooleanOption.AnnFilter], coord: coord);
                         return;
                     }
 
-                    if (opt["dumpfog"])
+                    if (opt[BooleanOption.DumpFog])
                     {
                         new ReverseEnemyOrder().FogElden(opt, game, data, ann, coord);
                         return;
@@ -220,10 +221,10 @@ namespace RandomizerCommon
 
                     ann.ProcessRestrictions(opt, null);
                     ann.AddSpecialItems();
-                    ann.AddMaterialItems(opt["mats"]);
+                    ann.AddMaterialItems(opt[BooleanOption.Mats]);
 
                     Random random = new Random(seed);
-                    Permutation perm = new Permutation(game, data, ann, messages, explain: opt["explain"]);
+                    Permutation perm = new Permutation(game, data, ann, messages, explain: opt[BooleanOption.Explain]);
                     perm.Logic(random, opt, preset);
 
                     notify?.Invoke(messages.Get(editPhase));
@@ -232,12 +233,12 @@ namespace RandomizerCommon
                         new PermutationWriter(game, data, ann, null, itemEventConfig, messages, coord);
                     permResult = writer.Write(random, perm, opt);
 
-                    if (opt["markareas"])
+                    if (opt[BooleanOption.MarkAreas])
                     {
                         new HintMarker(game, data, ann, messages, coord).Write(opt, perm, permResult);
                     }
 
-                    if (opt["mats"])
+                    if (opt[BooleanOption.Mats])
                     {
                         new EldenMaterialRandomizer(game, data, ann).Randomize(opt, perm);
                     }
@@ -246,7 +247,7 @@ namespace RandomizerCommon
                     characters = new CharacterWriter(game, data);
                     characters.Write(random, opt);
                 }
-                else if (!(opt["nooutfits"] && opt["nostarting"]))
+                else if (!(opt[BooleanOption.NoOutfits] && opt[BooleanOption.NoStarting]))
                 {
                     // Partially load item data just for identifying eligible starting weapons
                     EldenCoordinator coord = new EldenCoordinator(game, false);
@@ -258,7 +259,7 @@ namespace RandomizerCommon
                     characters.Write(random, opt);
                 }
 
-                if (opt["enemy"])
+                if (opt[BooleanOption.EnemyRandomization])
                 {
                     notify?.Invoke(messages.Get(enemyPhase));
 
@@ -266,7 +267,7 @@ namespace RandomizerCommon
                     string emedfPath = null;
                     string path = $@"{game.Dir}\Base\events.txt";
 #if DEV
-                    if (opt["full"] || opt["configgen"])
+                    if (opt[BooleanOption.Full] || opt[BooleanOption.ConfigGen])
                     {
                         emedfPath = @"configs\diste\er-common.emedf.json";
                         path = @"configs\diste\events.txt";
@@ -285,7 +286,7 @@ namespace RandomizerCommon
                         valueSpecs: enemyConfig.ValueTypes);
                     EnemyLocations enemyLocs = new EnemyRandomizer(game, events, enemyConfig).Run(opt, preset);
 
-                    if (enemyLocs != null && characters != null && !opt["nooutfits"])
+                    if (enemyLocs != null && characters != null && !opt[BooleanOption.NoOutfits])
                     {
                         characters.SetSpecialOutfits(opt, enemyLocs);
                     }
@@ -295,14 +296,14 @@ namespace RandomizerCommon
                 if (!header) return;
 #endif
 
-                if (!opt["nogesture"])
+                if (!opt[BooleanOption.NoGesture])
                 {
                     new GestureRandomizer(game).Randomize(opt);
                 }
 
                 MiscSetup.EldenCommonPass(game, opt, messages, permResult);
 
-                if (!opt["dryrun"])
+                if (!opt[BooleanOption.DryRun])
                 {
                     notify?.Invoke(messages.Get(savePhase));
                     string options =
@@ -326,7 +327,7 @@ namespace RandomizerCommon
                         game, FMGCategory.Menu, "EventTextForMap",
                         RuntimeParamChecker.RestartMessageId, restartMsg);
 
-                    game.SaveEldenRing(outPath, opt["uxm"], options, notifyMap);
+                    game.SaveEldenRing(outPath, opt[BooleanOption.Uxm], options, notifyMap);
                 }
             }
         }

@@ -17,6 +17,7 @@ using static RandomizerCommon.Util;
 using YamlDotNet.Core.Tokens;
 using System.Windows.Forms;
 using System.Security.Cryptography;
+using RefactorCommon;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 using static RandomizerCommon.HintMarker;
 
@@ -122,8 +123,8 @@ namespace RandomizerCommon
             public string AreaCondition { get; set; }
             public string NotAreaCondition { get; set; }
             // An option which must be enabled (or not) for this check to be considered. This is ignored on the second pass.
-            public string OptionCondition { get; set; }
-            public string NotOptionCondition { get; set; }
+            public BooleanOption? OptionCondition { get; set; }
+            public BooleanOption? NotOptionCondition { get; set; }
             // Which pass to check it in, first or second
             public string PassCondition { get; set; }
             // The item to use a flag for direct hinting, and item possession for dependencies.
@@ -322,7 +323,7 @@ namespace RandomizerCommon
                 row["posY"].Value = pos.Y;
                 row["posZ"].Value = pos.Z;
             }
-            if (opt["markbonfires"])
+            if (opt[BooleanOption.MarkBonfires])
             {
                 // Test for global position mapping (not needed for any other markers, at least)
                 foreach (PARAM.Row row in game.Params["BonfireWarpParam"].Rows)
@@ -374,7 +375,7 @@ namespace RandomizerCommon
             {
                 throw new Exception($"Internal error: missing key items {string.Join(", ", missingItems.Select(game.DisplayName))}");
             }
-            if (!perm.IncludedItems.TryGetValue(opt["runereq"] ? "erdtree" : "leyndell2_throne", out HashSet<string> erdtree))
+            if (!perm.IncludedItems.TryGetValue(opt[BooleanOption.RuneReq] ? "erdtree" : "leyndell2_throne", out HashSet<string> erdtree))
             {
                 throw new Exception($"Can't add hints, no required items found (internal error?)");
             }
@@ -389,8 +390,8 @@ namespace RandomizerCommon
                     {
                         if (req.AreaCondition != null && !requiredAreas.Contains(req.AreaCondition)) return true;
                         if (req.NotAreaCondition != null && requiredAreas.Contains(req.NotAreaCondition)) return true;
-                        if (req.OptionCondition != null && !opt[req.OptionCondition]) return true;
-                        if (req.NotOptionCondition != null && opt[req.NotOptionCondition]) return true;
+                        if (req.OptionCondition != null && !opt[req.OptionCondition.Value]) return true;
+                        if (req.NotOptionCondition != null && opt[req.NotOptionCondition.Value]) return true;
                         // In first pass, filters the checks to only required items
                         if (req.PassCondition == "second") return true;
                         return false;
@@ -998,7 +999,7 @@ namespace RandomizerCommon
             // Just hardcode this one for now
             bool freehints = false;
 #if DEBUG
-            freehints = opt["freehints"];
+            freehints = opt[BooleanOption.DEBUG_FreeHints];
 #endif
             int reqFlag = freehints ? 6001 : 3063;
             long baseId = 50;
@@ -1222,7 +1223,7 @@ namespace RandomizerCommon
                 AST.CallReturn(markReturnState, 0);
                 int cheap = freehints ? 2 : 200;
                 int expensive = freehints ? 5 : 500;
-                if (opt["markitems"])
+                if (opt[BooleanOption.MarkItems])
                 {
                     AST.Expr bossDefeatedExpr = new AST.BinaryExpr
                     {

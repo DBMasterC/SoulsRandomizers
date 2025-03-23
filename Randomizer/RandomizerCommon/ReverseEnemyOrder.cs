@@ -14,6 +14,7 @@ using static RandomizerCommon.LocationData.ItemScope;
 using YamlDotNet.Serialization.NamingConventions;
 using SoulsFormats.KF4;
 using Org.BouncyCastle.Utilities;
+using RefactorCommon;
 
 namespace RandomizerCommon
 {
@@ -669,7 +670,7 @@ namespace RandomizerCommon
                 results.Add(item);
             }
             results = results.OrderBy(loc => loc.Map).ToList();
-            if (opt["outyaml"])
+            if (opt[BooleanOption.OutYaml])
             {
                 Console.WriteLine(GameData.Serializer.Serialize(results));
             }
@@ -677,7 +678,7 @@ namespace RandomizerCommon
 
         public void FogElden(RandomizerOptions opt, GameData game, LocationData data, AnnotationData ann, EldenCoordinator coord)
         {
-            if (opt["crawl"])
+            if (opt[BooleanOption.Crawl])
             {
                 FogEldenCrawl(opt, game, data, ann);
                 return;
@@ -690,7 +691,7 @@ namespace RandomizerCommon
 
             // First pass: generate possible area dictionary
             // Do this just based on names
-            if (opt["gendict"])
+            if (opt[BooleanOption.GenDict])
             {
                 foreach (FogArea area in fogConfig.Areas)
                 {
@@ -819,7 +820,7 @@ namespace RandomizerCommon
                 }
             }
 
-            if (opt["trivial"])
+            if (opt[BooleanOption.Trivial])
             {
                 Console.WriteLine($"Trivial areas: {string.Join(" ", trivialAreas)}");
                 return;
@@ -968,7 +969,7 @@ namespace RandomizerCommon
             Dictionary<(string, string), EnemyLoc> existEnemyLocs = enemyLocs.Enemies
                 .ToDictionary(e => (e.Map, e.ID), e => e);
 
-            if (opt["outmaps"])
+            if (opt[BooleanOption.OutMaps])
             {
                 SortedSet<string> mapTiers = new SortedSet<string>();
                 foreach (EnemyLocArea area in enemyLocs.EnemyAreas)
@@ -1210,7 +1211,7 @@ namespace RandomizerCommon
                     if (scalingTiers.TryGetValue(info.ID, out int tier))
                     {
                         AddMulti(areaScaling, area, tier);
-                        if (opt["enemyarea"] && area == "x" && tier > 0) Console.WriteLine($"{area} tier {tier}: {existEnemyLocs[(enemy.MainMap, enemy.Name)].DebugText}");
+                        if (opt[BooleanOption.EnemyArea] && area == "x" && tier > 0) Console.WriteLine($"{area} tier {tier}: {existEnemyLocs[(enemy.MainMap, enemy.Name)].DebugText}");
                     }
                     AddMulti(mapAreas, enemy.MainMap, area);
                     if (enemy.Col != null)
@@ -1243,7 +1244,7 @@ namespace RandomizerCommon
                         simple = scalingHist.Count == 2;
                         areaTier = scalingHist.Where(e => e.Key > 1).MaxBy(e => e.Value).Key;
                     }
-                    if (opt["enemyarea"] && !simple) Console.WriteLine($"{area} ({areaTier}) has tiers: {string.Join(", ", scalingHist.OrderBy(e => e.Key).Select(e => $"tier {e.Key} = {e.Value} count"))}");
+                    if (opt[BooleanOption.EnemyArea] && !simple) Console.WriteLine($"{area} ({areaTier}) has tiers: {string.Join(", ", scalingHist.OrderBy(e => e.Key).Select(e => $"tier {e.Key} = {e.Value} count"))}");
                 }
                 EnemyLocArea enemyArea = new EnemyLocArea { Name = area, ScalingTier = areaTier };
                 enemyLocAreas[area] = enemyArea;
@@ -1266,14 +1267,14 @@ namespace RandomizerCommon
                         main = nonBoss[0];
                     }
                     // Exclude boss areas
-                    if (opt["enemyarea"] && !simple) Console.WriteLine($"Map {map} has areas: {string.Join(", ", hist.OrderByDescending(e => e.Value).Select(e => $"{e.Key} = {e.Value} count"))}");
+                    if (opt[BooleanOption.EnemyArea] && !simple) Console.WriteLine($"Map {map} has areas: {string.Join(", ", hist.OrderByDescending(e => e.Value).Select(e => $"{e.Key} = {e.Value} count"))}");
                 }
                 EnemyLocArea loc = enemyLocAreas[main];
                 loc.MainMap = addSpaceItem(loc.MainMap, map);
             }
             foreach ((int group, SortedSet<string> areas) in groupAreas)
             {
-                if (opt["enemyarea"] && areas.Count > 1 && areas.Any(a => separateBosses.Contains(a)))
+                if (opt[BooleanOption.EnemyArea] && areas.Count > 1 && areas.Any(a => separateBosses.Contains(a)))
                 {
                     Console.WriteLine($"Group {group} has areas {string.Join(", ", areas)}");
                 }
@@ -1285,7 +1286,7 @@ namespace RandomizerCommon
             }
             foreach ((string col, SortedSet<string> areas) in colAreas)
             {
-                if (opt["enemyarea"] && areas.Count > 1)
+                if (opt[BooleanOption.EnemyArea] && areas.Count > 1)
                 {
                     Console.WriteLine($"Col {col} has areas {string.Join(", ", areas)}");
                 }
@@ -1299,17 +1300,17 @@ namespace RandomizerCommon
             {
                 FogArea fogArea = fogAreas[loc.Name];
                 // Note: evergaol is currently open area, but it can have added enemies
-                if (opt["enemyarea"] && fogArea.DefeatFlag > 0 && fogArea.OpenArea == null && loc.Cols == null && loc.Groups == null)
+                if (opt[BooleanOption.EnemyArea] && fogArea.DefeatFlag > 0 && fogArea.OpenArea == null && loc.Cols == null && loc.Groups == null)
                 {
                     Console.WriteLine($"Missing cols or groups: {loc.Name} tier {loc.ScalingTier}");
                 }
             }
 
-            if (opt["outenemy"])
+            if (opt[BooleanOption.OutEnemy])
             {
                 Console.WriteLine(GameData.Serializer.Serialize(enemyLocs));
             }
-            if (opt["outyaml"])
+            if (opt[BooleanOption.OutYaml])
             {
                 Console.WriteLine(GameData.Serializer.Serialize(locs));
             }

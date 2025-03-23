@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using RefactorCommon;
 using SoulsFormats;
 using YamlDotNet.Serialization;
 using static RandomizerCommon.AnnotationData;
@@ -41,7 +42,7 @@ namespace RandomizerCommon
             // defeat a powerful enemy
             var itemDesc = game.ItemFMGs["アイテム説明"];
             var eventText = game.MenuFMGs["イベントテキスト"];
-            if (opt["writehints"])
+            if (opt[BooleanOption.WriteHints])
             {
                 List<int> eventIds = new List<int>
                 {
@@ -110,12 +111,12 @@ namespace RandomizerCommon
                     categoryText[cat.Name] = cat.Text;
                 }
             }
-            if (opt["earlyhirata"]) categories[ItemCategory.ExcludeHints].Add(ann.Items["younglordsbellcharm"]);
+            if (opt[BooleanOption.EarlyHirata]) categories[ItemCategory.ExcludeHints].Add(ann.Items["younglordsbellcharm"]);
             categories[ItemCategory.ExcludeHints].AddRange(permutation.NotRequiredKeyItems);
 
             // TODO: Exclude non-technically-required items... calculate this in key item permutations
             List<ItemKey> allItems = permutation.KeyItems.ToList();
-            if (opt["norandom_skills"])
+            if (!opt[BooleanOption.Random_Skills])
             {
                 categories[ItemCategory.ImportantTool].Clear();
             }
@@ -177,7 +178,7 @@ namespace RandomizerCommon
                 }
             }
 
-            bool printText = opt["hinttext"];
+            bool printText = opt[BooleanOption.HintText];
 
             // Process items to search for
             List<ItemCategory> categoryOverrides = new List<ItemCategory> { ItemCategory.RequiredKey, ItemCategory.RequiredAbility, ItemCategory.ImportantTool, ItemCategory.HintFodder };

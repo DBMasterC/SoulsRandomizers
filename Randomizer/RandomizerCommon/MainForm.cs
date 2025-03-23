@@ -339,7 +339,7 @@ namespace RandomizerCommon
             else if (options[NumericOption.KeyItemChainWeight] <= 10)
                 chain = "Key items will usually be in different areas and form interesting chains.";
             else chain = "Key items will usually form long chains across different areas.";
-            if (options[BooleanOption.NoRandom]) chain = "";
+            if (options[BooleanOption.Random]) chain = "";
             difficultyL.Text = $"{loc}\r\n{chain}";
             difficultyAmtL.Text = $"{options.Difficulty}%";
             string weaponText = "Comparable difficulty to base game";

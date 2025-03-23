@@ -18,6 +18,7 @@ using static SoulsFormats.EMEVD.Instruction;
 using static System.Windows.Forms.Design.AxImporter;
 using Org.BouncyCastle.Ocsp;
 using System.IO;
+using RefactorCommon;
 
 namespace RandomizerCommon
 {
@@ -112,7 +113,7 @@ namespace RandomizerCommon
                     Console.WriteLine(
                         $"{game.DisplayName(assign.Key.Item)}: {ann.GetLocationHint(assign.Value, permutation.SpecialLocation(scope))}");
                     hasHint = true;
-                    if ([NumericOption.KeyItemDifficulty]"fullhint"])
+                    if (opt[BooleanOption.FullHint])
                     {
                         Console.WriteLine($"- {ann.GetLocationDescription(assign.Value)}");
                     }
@@ -124,7 +125,7 @@ namespace RandomizerCommon
                 }
 
                 Console.WriteLine();
-                if (opt["silent"])
+                if (opt[BooleanOption.Silent])
                 {
                     writeSwitch = false;
                     break;
@@ -496,7 +497,7 @@ namespace RandomizerCommon
                         }
 #endif
                         bool printChances = true;
-                        if (opt["racemodeinfo"])
+                        if (opt[BooleanOption.RaceModeInfo])
                         {
                             HashSet<string> filterTags = ann.RaceModeTags;
                             string raceDesc = ann.GetLocationDescription(targetKey, filterTags);
@@ -728,7 +729,7 @@ namespace RandomizerCommon
             Console.WriteLine();
 
             // Hacky convenience function for generating race mode list
-            if (opt["racemodeinfo"])
+            if (opt[BooleanOption.RaceModeInfo])
             {
                 List<string> locationDocs = new List<string>
                 {
@@ -826,7 +827,7 @@ namespace RandomizerCommon
                 // Synthetic Rold lot. The location flag is still 40001, but the item's flag is changed.
                 int roldFlag = GameData.EldenRingBase + 2010;
                 int roldEventId = GameData.EldenRingBase + 1010;
-                if (opt.GetStringAsInt("runes_rold", 0, 7, out _))
+                if (opt.GetStringAsInt(StringOption.Runes_Rold, 0, 7, out _))
                 {
                     ItemKey rold = ann.ItemGroups["removerold"][0];
                     if (!(itemEventFlags.TryGetValue(rold, out int flag) && flag > 0))
@@ -1106,7 +1107,7 @@ namespace RandomizerCommon
                                 {
                                     // For the leyndell edit, replace the Great Runes flag with a different amount if requested
                                     // It turns out that 180 is a valid flag after 0 GRs.
-                                    if (!opt.GetStringAsInt("runes_leyndell", 0, 7, out int leyndellRunes) ||
+                                    if (!opt.GetStringAsInt(StringOption.Runes_Leyndell, 0, 7, out int leyndellRunes) ||
                                         leyndellRunes == 2)
                                     {
                                         continue;
@@ -1305,7 +1306,7 @@ namespace RandomizerCommon
                         addNewEvent(19003130, runeInstrs, EMEVD.Event.RestBehaviorType.Restart);
                     }
 
-                    if (entry.Key == "m60_49_53_00" && opt.GetStringAsInt("runes_rold", 0, 7, out int roldRunes))
+                    if (entry.Key == "m60_49_53_00" && opt.GetStringAsInt(StringOption.Runes_Rold, 0, 7, out int roldRunes))
                     {
                         int unlockFlag = 180 + roldRunes;
                         // Rold Medallion has been taken out of logic, so make self-contained logic to award it here.
@@ -1574,7 +1575,7 @@ namespace RandomizerCommon
                 }
 
                 // This could also be applied to enemy randomizer, but it affects logic
-                if (opt["allcraft"])
+                if (opt[BooleanOption.AllCraft])
                 {
                     foreach (PARAM.Row row in game.Params["ShopLineupParam_Recipe"].Rows)
                     {

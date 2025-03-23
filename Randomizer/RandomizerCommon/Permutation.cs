@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RefactorCommon;
 using static RandomizerCommon.AnnotationData;
 using static RandomizerCommon.LocationData;
 using static RandomizerCommon.LocationData.ItemScope;
@@ -315,7 +316,7 @@ namespace RandomizerCommon
                 // dlc1 tag is special hack to disable Captain's Ashes locations
                 // also, hack to avoid Sekiro locations... please remove this...
                 if (slot.GetArea() == "unknown" || assign.IncludedAreas[slot.GetArea()].Count == 0 ||
-                    (slot.TagList.Contains("dlc1") && !options["dlc1"]))
+                    (slot.TagList.Contains("dlc1") && !options[BooleanOption.Dlc1]))
                 {
                     unusedLocations.Add(entry.Key);
                     unusedSlots.UnionWith(entry.Value);
@@ -367,7 +368,7 @@ namespace RandomizerCommon
             int unfairRanking = (int)Math.Round((maxDifficulty - 1) * options[NumericOption.UnfairWeight]);
             int veryUnfairRanking = (int)Math.Round(maxDifficulty * options[NumericOption.VeryUnfairWeight]);
             int keyItemDifficulty = (int)Math.Round(20 * options[NumericOption.KeyItemDifficulty]);
-            int desirableDifficulty = (int)Math.Round(15 * options[NumericOption.AllitemDifficulty]);
+            int desirableDifficulty = (int)Math.Round(15 * options[NumericOption.AllItemDifficulty]);
 
             difficultyTags["unfair"] = unfairRanking;
             difficultyTags["veryunfair"] = veryUnfairRanking;
@@ -420,7 +421,7 @@ namespace RandomizerCommon
                 // Weights for all items (lateness within game)
                 maxWeight = Math.Pow(2, desirableDifficulty);
                 (double, double) weight = (1, maxWeight);
-                if (!options["fog"])
+                if (!options[BooleanOption.Fog])
                 {
                     weight = GetSubRange(weight, (int)(assign.LocationLateness[gameLocation] * 20), 20);
                 }
@@ -821,7 +822,7 @@ namespace RandomizerCommon
 
             // Key item detection is based on area logic which is mostly eliminated by fog rando mode.
             // Just use all keys in this case.
-            if (options["fog"])
+            if (options[BooleanOption.Fog])
             {
                 foreach (ItemKey key in _annotationData.ItemGroups["keyitems"])
                 {
@@ -862,7 +863,7 @@ namespace RandomizerCommon
                         specialAssign[source.Item] = target;
                     }
 
-                    if (source.Item.Type == ItemType.RING && !options["fog"])
+                    if (source.Item.Type == ItemType.RING && !options[BooleanOption.Fog])
                     {
                         AddMulti(ringGroups, source.Item.ID - (source.Item.ID % 10), (source, target));
                     }
