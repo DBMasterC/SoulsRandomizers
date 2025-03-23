@@ -8,20 +8,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dd41ca92-765f-472f-98ff-04a36d186dbd" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/RefactorCommon/ToDoException.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.SoulsRandomizers/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SoulsRandomizers/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EldenRingRandomizer/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EldenRingRandomizer/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/EldenDataPrinter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/EldenDataPrinter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EldenRingRandomizer/EldenRingRandomizer.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/EldenRingRandomizer/EldenRingRandomizer.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomizerCommon/AnnotationData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/AnnotationData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomizerCommon/CharacterWriter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/CharacterWriter.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RandomizerCommon/EldenForm.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/EldenForm.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/EnemyRandomizer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/EnemyRandomizer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/GameData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/GameData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/LocationDataScraper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/LocationDataScraper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomizerCommon/EldenLocationDataScraper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/EldenLocationDataScraper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomizerCommon/KeyItemsPermutation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/KeyItemsPermutation.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RandomizerCommon/MainForm.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/MainForm.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RandomizerCommon/MiscSetup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/MiscSetup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/Randomizer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/Randomizer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomizerCommon/Permutation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/Permutation.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomizerCommon/PermutationWriter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/PermutationWriter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomizerCommon/RandomizerCommon.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/RandomizerCommon.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RandomizerCommon/RandomizerOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/RandomizerOptions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/RandomizerOptionsFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/RandomizerOptionsFile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/ReverseEnemyOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RandomizerCommon/ReverseEnemyOrder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomizerCommon/SekiroLocationDataScraper.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SoulsRandomizers.sln" beforeDir="false" afterPath="$PROJECT_DIR$/SoulsRandomizers.sln" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SoulsIds" beforeDir="false" afterPath="$PROJECT_DIR$/../SoulsIds" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SoulsIds/SoulsIds/BhdExtractor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../SoulsIds/SoulsIds/BhdExtractor.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SoulsIds/SoulsIds/GameEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../SoulsIds/SoulsIds/GameEditor.cs" afterDir="false" />
@@ -34,6 +35,9 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DpaMonitoringSettings">
+    <option name="autoShow" value="false" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -50,27 +54,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Project.EldenRingRandomizer.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "settings.sync",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Project.EldenRingRandomizer.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\david\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
-      "C:\\Users\\david\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
-      "C:\\Users\\david\\AppData\\Local\\Symbols\\src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;C:\\Users\\david\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\david\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\david\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="EldenRingRandomizer" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -101,7 +105,8 @@
       <updated>1723241058127</updated>
       <workItem from="1723241059308" duration="190000" />
       <workItem from="1741730948885" duration="3485000" />
-      <workItem from="1741904580735" duration="4015000" />
+      <workItem from="1741904580735" duration="4508000" />
+      <workItem from="1742753951953" duration="5392000" />
     </task>
     <servers />
   </component>

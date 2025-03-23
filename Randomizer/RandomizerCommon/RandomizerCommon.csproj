@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
@@ -28,6 +28,7 @@
     <ProjectReference Include="..\..\SoulsFormatsNEXT\SoulsFormats\SoulsFormats.csproj" />
     <ProjectReference Include="..\..\SoulsIds\SoulsIds\SoulsIds.csproj" />
     <ProjectReference Include="..\..\yet-another-tab-control\GrayIris.Utilities.csproj" />
+    <ProjectReference Include="..\RefactorCommon\RefactorCommon.csproj" />
   </ItemGroup>
 
   <ItemGroup>

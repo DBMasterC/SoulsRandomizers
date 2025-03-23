@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using RandomizerCommon.Properties;
+using RefactorCommon;
 using static SoulsIds.GameSpec;
 
 namespace RandomizerCommon
@@ -86,13 +87,13 @@ namespace RandomizerCommon
             // New defaults
             if (previousOpts.Contains("v2") || previousOpts.Contains("v3"))
             {
-                options["item"] = true;
-                options["enemy"] = true;
-                options["mimics"] = true;
-                options["lizards"] = true;
-                options["earlyreq"] = true;
-                options["scale"] = true;
-                options["edittext"] = true;
+                options[BooleanOption.ItemRandomization] = true;
+                options[BooleanOption.EnemyRandomization] = true;
+                options[BooleanOption.Mimics] = true;
+                options[BooleanOption.Lizards] = true;
+                options[BooleanOption.EarlyReq] = true;
+                options[BooleanOption.Scale] = true;
+                options[BooleanOption.EditText] = true;
             }
 
             simultaneousUpdate = true;
@@ -266,7 +267,7 @@ namespace RandomizerCommon
             void setCheck(Control control, bool enabled, bool defaultState, bool disabledState, string overrideDisable)
             {
                 bool prevEnabled = control.Enabled;
-                if (overrideDisable == null || options[overrideDisable])
+                if (overrideDisable == null || options[BooleanOption.OverrideDisable])
                 {
                     toEnable[control] = enabled;
                 }
@@ -290,9 +291,9 @@ namespace RandomizerCommon
             }
 
             ;
-            setCheck(earlydlc, options["dlc1"], false, false, "item");
-            setCheck(dlc2fromdlc1, options["dlc1"] && options["dlc2"], true, false, "item");
-            setCheck(racemode_health, options["racemode"], false, false, "item");
+            setCheck(earlydlc, options[BooleanOption.Dlc1], false, false, "item");
+            setCheck(dlc2fromdlc1, options[BooleanOption.Dlc1] && options[BooleanOption.Dlc2], true, false, "item");
+            setCheck(racemode_health, options[BooleanOption.RaceMode], false, false, "item");
             if (!racemode_health.Checked && !norandom_health.Checked)
             {
                 defaultHealth.Checked = true;
@@ -311,7 +312,7 @@ namespace RandomizerCommon
             }
 
             enemyseed_TextChanged(null, null);
-            randomize.Enabled = (options["enemy"] || options["item"]) && !error;
+            randomize.Enabled = (options[BooleanOption.EnemyRandomization] || options[BooleanOption.ItemRandomization]) && !error;
             if (changes) SetControlFlags(this);
             simultaneousUpdate = false;
         }
@@ -319,45 +320,45 @@ namespace RandomizerCommon
         private void UpdateLabels()
         {
             string unfairText = "";
-            if (options.GetNum("veryunfairweight") > 0.5) unfairText = " and very unfair";
-            else if (options.GetNum("unfairweight") > 0.5) unfairText = " and unfair";
+            if (options[NumericOption.VeryUnfairWeight] > 0.5) unfairText = " and very unfair";
+            else if (options[NumericOption.VeryUnfairWeight] > 0.5) unfairText = " and unfair";
             string loc;
-            if (options.GetNum("allitemdifficulty") > 0.7)
+            if (options[NumericOption.AllItemDifficulty] > 0.7)
                 loc = $"Much better rewards for difficult and late{unfairText} locations.";
-            else if (options.GetNum("allitemdifficulty") > 0.3)
+            else if (options[NumericOption.AllItemDifficulty] > 0.3)
                 loc = $"Better rewards for difficult and late{unfairText} locations.";
-            else if (options.GetNum("allitemdifficulty") > 0.1)
+            else if (options[NumericOption.AllItemDifficulty] > 0.1)
                 loc = $"Slightly better rewards for difficult and late{unfairText} locations.";
-            else if (options.GetNum("allitemdifficulty") > 0.001) loc = "Most locations for items are equally likely.";
+            else if (options[NumericOption.AllItemDifficulty] > 0.001) loc = "Most locations for items are equally likely.";
             else loc = "All possible locations for items are equally likely.";
             string chain;
-            if (options.GetNum("keyitemchainweight") <= 3)
+            if (options[NumericOption.KeyItemChainWeight] <= 3)
                 chain = "Key items will usually be easy to find and not require much side content.";
-            else if (options.GetNum("keyitemchainweight") <= 4.001)
+            else if (options[NumericOption.KeyItemChainWeight] <= 4.001)
                 chain = "Key items will usually be in different areas and depend on each other.";
-            else if (options.GetNum("keyitemchainweight") <= 10)
+            else if (options[NumericOption.KeyItemChainWeight] <= 10)
                 chain = "Key items will usually be in different areas and form interesting chains.";
             else chain = "Key items will usually form long chains across different areas.";
-            if (options["norandom"]) chain = "";
+            if (options[BooleanOption.NoRandom]) chain = "";
             difficultyL.Text = $"{loc}\r\n{chain}";
             difficultyAmtL.Text = $"{options.Difficulty}%";
             string weaponText = "Comparable difficulty to base game";
             string estusText = "Comparable difficulty to base game";
             string soulsText = "Comparable difficulty to base game";
-            if (!options["weaponprogression"])
+            if (!options[BooleanOption.WeaponProgression])
             {
-                if (options.GetNum("allitemdifficulty") > 0.3) weaponText = "May be more difficult than base game";
-                else if (options.GetNum("allitemdifficulty") < 0.2) weaponText = "Easier than base game";
+                if (options[NumericOption.AllItemDifficulty] > 0.3) weaponText = "May be more difficult than base game";
+                else if (options[NumericOption.AllItemDifficulty] < 0.2) weaponText = "Easier than base game";
             }
 
-            if (!options["estusprogression"])
+            if (!options[BooleanOption.EstusProgression])
             {
-                if (options.GetNum("allitemdifficulty") > 0.5)
+                if (options[NumericOption.AllItemDifficulty] > 0.5)
                     estusText = "You will get almost no estus upgrades until the very end of the game";
-                else if (options.GetNum("allitemdifficulty") > 0.15) estusText = "More difficult than base game";
+                else if (options[NumericOption.AllItemDifficulty] > 0.15) estusText = "More difficult than base game";
             }
 
-            if (!options["soulsprogression"])
+            if (!options[BooleanOption.SoulsProgression])
             {
                 soulsText = "Easier than base game";
             }
@@ -367,29 +368,29 @@ namespace RandomizerCommon
             soulsprogressionL.Text = soulsText;
             string dancerLevel = "high";
             string dancerWeapon = "+7";
-            if (options["earlylothric"])
+            if (options[BooleanOption.EarlyLothric])
             {
                 dancerLevel = "low";
                 dancerWeapon = "+3 to +5";
             }
-            else if (options["middancer"]) dancerLevel = "medium";
+            else if (options[BooleanOption.MidDancer]) dancerLevel = "medium";
 
-            if (!options["weaponprogression"]) dancerWeapon = "no guaranteed";
+            if (!options[BooleanOption.WeaponProgression]) dancerWeapon = "no guaranteed";
             earlylothricL.Text = $"May require Dancer at {dancerLevel} soul level with {dancerWeapon} weapon";
-            string friedeEstus = options["estusprogression"] ? "most" : "no guaranteed";
+            string friedeEstus = options[BooleanOption.EstusProgression] ? "most" : "no guaranteed";
             string friedeWeapon = "+10";
             string friedeLevel = "high";
-            if (options["earlydlc"])
+            if (options[BooleanOption.EarlyDlc])
             {
                 friedeLevel = "medium";
                 friedeWeapon = "+7";
             }
 
-            if (!options["weaponprogression"]) friedeWeapon = "no guaranteed";
+            if (!options[BooleanOption.WeaponProgression]) friedeWeapon = "no guaranteed";
             earlydlcL.Text =
                 $"May require Friede at {friedeLevel} soul level, {friedeEstus} estus, and {friedeWeapon} weapon";
 
-            chests.Text = "Turn all chests into mimics" + (options["mimics"] ? " (randomized)" : "");
+            chests.Text = "Turn all chests into mimics" + (options[BooleanOption.Mimics] ? " (randomized)" : "");
         }
 
         private async void randomize_Click(object sender, EventArgs e)
@@ -440,7 +441,7 @@ namespace RandomizerCommon
             }
 
             SaveOptions();
-            RandomizerOptions rand = options.Copy();
+            RandomizerOptions rand = new RandomizerOptions(options);
             working = true;
             string buttonText = randomize.Text;
             randomize.Text = $"Running...";

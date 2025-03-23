@@ -826,7 +826,7 @@ namespace RandomizerCommon
                 // Synthetic Rold lot. The location flag is still 40001, but the item's flag is changed.
                 int roldFlag = GameData.EldenRingBase + 2010;
                 int roldEventId = GameData.EldenRingBase + 1010;
-                if (opt.GetInt("runes_rold", 0, 7, out _))
+                if (opt.GetStringAsInt("runes_rold", 0, 7, out _))
                 {
                     ItemKey rold = ann.ItemGroups["removerold"][0];
                     if (!(itemEventFlags.TryGetValue(rold, out int flag) && flag > 0))
@@ -1106,7 +1106,7 @@ namespace RandomizerCommon
                                 {
                                     // For the leyndell edit, replace the Great Runes flag with a different amount if requested
                                     // It turns out that 180 is a valid flag after 0 GRs.
-                                    if (!opt.GetInt("runes_leyndell", 0, 7, out int leyndellRunes) ||
+                                    if (!opt.GetStringAsInt("runes_leyndell", 0, 7, out int leyndellRunes) ||
                                         leyndellRunes == 2)
                                     {
                                         continue;
@@ -1305,7 +1305,7 @@ namespace RandomizerCommon
                         addNewEvent(19003130, runeInstrs, EMEVD.Event.RestBehaviorType.Restart);
                     }
 
-                    if (entry.Key == "m60_49_53_00" && opt.GetInt("runes_rold", 0, 7, out int roldRunes))
+                    if (entry.Key == "m60_49_53_00" && opt.GetStringAsInt("runes_rold", 0, 7, out int roldRunes))
                     {
                         int unlockFlag = 180 + roldRunes;
                         // Rold Medallion has been taken out of logic, so make self-contained logic to award it here.

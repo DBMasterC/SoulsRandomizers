@@ -364,14 +364,14 @@ namespace RandomizerCommon
             int maxDifficulty = 6; // difficultyTags.Values.Max();
 
             // Initialize all weights based on difficulty settings
-            int unfairRanking = (int)Math.Round((maxDifficulty - 1) * options.GetNum("unfairweight"));
-            int veryUnfairRanking = (int)Math.Round(maxDifficulty * options.GetNum("veryunfairweight"));
-            int keyItemDifficulty = (int)Math.Round(20 * options.GetNum("keyitemdifficulty"));
-            int desirableDifficulty = (int)Math.Round(15 * options.GetNum("allitemdifficulty"));
+            int unfairRanking = (int)Math.Round((maxDifficulty - 1) * options[NumericOption.UnfairWeight]);
+            int veryUnfairRanking = (int)Math.Round(maxDifficulty * options[NumericOption.VeryUnfairWeight]);
+            int keyItemDifficulty = (int)Math.Round(20 * options[NumericOption.KeyItemDifficulty]);
+            int desirableDifficulty = (int)Math.Round(15 * options[NumericOption.AllitemDifficulty]);
 
             difficultyTags["unfair"] = unfairRanking;
             difficultyTags["veryunfair"] = veryUnfairRanking;
-            if (options.GetNum("keyitemdifficulty") > 0.9)
+            if (options[NumericOption.KeyItemDifficulty] > 0.9)
             {
                 difficultyTags["miniboss"]--;
                 difficultyTags["minibossrespawn"]--;

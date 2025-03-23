@@ -1,172 +1,173 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RefactorCommon;
 using static SoulsIds.GameSpec;
 
 namespace RandomizerCommon
 {
     public class RandomizerOptions
     {
-        private SortedDictionary<string, bool> opt = new SortedDictionary<string, bool>();
-        private SortedDictionary<string, string> str = new SortedDictionary<string, string>();
-        private Dictionary<string, float> num = new Dictionary<string, float>();
+        private readonly SortedDictionary<BooleanOption, bool> _booleanOptions = new();
+        private readonly SortedDictionary<StringOption, string> _stringOptions = new();
+        private readonly Dictionary<NumericOption, float> _numericOptions = new();
         private int difficulty;
 
-        public RandomizerOptions Copy()
+        public RandomizerOptions(RandomizerOptions copyFrom)
         {
-            // Copies most things, except not the seed and preset (maybe can revisit this when revisiting DS3)
-            return new RandomizerOptions()
-            {
-                opt = new SortedDictionary<string, bool>(opt),
-                str = new SortedDictionary<string, string>(str),
-                num = new Dictionary<string, float>(num),
-                difficulty = difficulty,
-                Seed = Seed,
-                Seed2 = Seed2,
-                Preset = Preset,
-            };
+            _booleanOptions = new(copyFrom._booleanOptions);
+            _stringOptions = new(copyFrom._stringOptions);
+            _numericOptions = new(copyFrom._numericOptions);
+            difficulty = copyFrom.difficulty;
+            Seed = copyFrom.Seed;
+            Seed2 = copyFrom.Seed2;
+            Preset = copyFrom.Preset;
         }
 
         public static int EldenRingVersion = 10;
 
         public RandomizerOptions()
         {
-            int version = EldenRingVersion;
-            for (int i = 1; i < version; i++)
-            {
-                opt[$"v{i}"] = false;
-            }
-
-            opt[$"v{version}"] = true;
+            _numericOptions.Add(NumericOption.EldenRingVersion, EldenRingVersion);
+            // int version = EldenRingVersion;
+            // for (int i = 1; i < version; i++)
+            // {
+            //     _booleanOptions[$"v{i}"] = false;
+            // }
+            //
+            // _booleanOptions[$"v{version}"] = true;
         }
 
-        public static RandomizerOptions Parse(IEnumerable<string> args, 
+        public static RandomizerOptions Parse(IEnumerable<string> args,
             Predicate<string> optionsFilter = null)
         {
-            RandomizerOptions options = new RandomizerOptions();
-            uint seed = 0;
-            uint seed2 = 0;
-            int difficulty = 0;
-            List<string> preset = new List<string>();
-            string op = null;
-            int numIndex = 0;
-            foreach (string arg in args)
-            {
-                if (arg == "--preset")
-                {
-                    op = "preset";
-                    continue;
-                }
-                else if (arg.StartsWith("--"))
-                {
-                    op = null;
-                }
-
-                if (op == "preset")
-                {
-                    preset.Add(arg);
-                }
-                else if (uint.TryParse(arg, out uint num))
-                {
-                    if (numIndex == 0)
-                    {
-                        difficulty = (int)num;
-                    }
-                    else if (numIndex == 1)
-                    {
-                        seed = num;
-                    }
-                    else if (numIndex == 2)
-                    {
-                        seed2 = num;
-                    }
-
-                    numIndex++;
-                }
-                else if (arg.Contains(":"))
-                {
-                    string[] parts = arg.Split(new[] { ':' }, 2);
-                    options.str[parts[0]] = parts[1];
-                }
-                else
-                {
-                    if (optionsFilter != null && !optionsFilter(arg)) continue;
-                    options[arg] = true;
-                }
-            }
-
-            options.Difficulty = difficulty;
-            options.Seed = seed;
-            options.Seed2 = seed2;
-            if (options.str.TryGetValue("bias", out string valStr) && int.TryParse(valStr, out int val))
-            {
-                options.Difficulty = val;
-                options.str.Remove("bias");
-            }
-
-            if (options.str.TryGetValue("seed", out valStr) && uint.TryParse(valStr, out uint uval))
-            {
-                options.Seed = uval;
-                options.str.Remove("seed");
-            }
-
-            if (options.str.TryGetValue("seed2", out valStr) && uint.TryParse(valStr, out uval))
-            {
-                options.Seed2 = uval;
-                options.str.Remove("seed2");
-            }
-
-            if (preset.Count > 0) options.Preset = string.Join(" ", preset);
-            return options;
+            //db todo - just make this json, geeze.
+            
+            // RandomizerOptions options = new RandomizerOptions();
+            // uint seed = 0;
+            // uint seed2 = 0;
+            // int difficulty = 0;
+            // List<string> preset = new List<string>();
+            // string op = null;
+            // int numIndex = 0;
+            // foreach (string arg in args)
+            // {
+            //     if (arg == "--preset")
+            //     {
+            //         op = "preset";
+            //         continue;
+            //     }
+            //     else if (arg.StartsWith("--"))
+            //     {
+            //         op = null;
+            //     }
+            //
+            //     if (op == "preset")
+            //     {
+            //         preset.Add(arg);
+            //     }
+            //     else if (uint.TryParse(arg, out uint num))
+            //     {
+            //         if (numIndex == 0)
+            //         {
+            //             difficulty = (int)num;
+            //         }
+            //         else if (numIndex == 1)
+            //         {
+            //             seed = num;
+            //         }
+            //         else if (numIndex == 2)
+            //         {
+            //             seed2 = num;
+            //         }
+            //
+            //         numIndex++;
+            //     }
+            //     else if (arg.Contains(":"))
+            //     {
+            //         string[] parts = arg.Split(new[] { ':' }, 2);
+            //         options._stringOptions[parts[0]] = parts[1];
+            //     }
+            //     else
+            //     {
+            //         if (optionsFilter != null && !optionsFilter(arg)) continue;
+            //         options[arg] = true;
+            //     }
+            // }
+            //
+            // options.Difficulty = difficulty;
+            // options.Seed = seed;
+            // options.Seed2 = seed2;
+            // if (options._stringOptions.TryGetValue("bias", out string valStr) && int.TryParse(valStr, out int val))
+            // {
+            //     options.Difficulty = val;
+            //     options._stringOptions.Remove("bias");
+            // }
+            //
+            // if (options._stringOptions.TryGetValue("seed", out valStr) && uint.TryParse(valStr, out uint uval))
+            // {
+            //     options.Seed = uval;
+            //     options._stringOptions.Remove("seed");
+            // }
+            //
+            // if (options._stringOptions.TryGetValue("seed2", out valStr) && uint.TryParse(valStr, out uval))
+            // {
+            //     options.Seed2 = uval;
+            //     options._stringOptions.Remove("seed2");
+            // }
+            //
+            // if (preset.Count > 0) options.Preset = string.Join(" ", preset);
+            // return options;
+            throw new ToDoException();
         }
 
-        public bool this[string name]
+        public bool this[BooleanOption boolOpt]
         {
             get
-            {
-                if (name.StartsWith("invert"))
-                {
-                    name = "no" + name.Substring(6);
-                    return !(opt.ContainsKey(name) ? opt[name] : false);
-                }
+                => _booleanOptions.GetValueOrDefault(boolOpt, false);
+            // if (name.StartsWith("invert"))
+            // {
+            //     name = "no" + name.Substring(6);
+            //     return !(_booleanOptions.ContainsKey(name) ? _booleanOptions[name] : false);
+            // }
 
-                return opt.ContainsKey(name) ? opt[name] : false;
-            }
-            set
-            {
-                if (name.StartsWith("invert"))
-                {
-                    name = "no" + name.Substring(6);
-                    opt[name] = !value;
-                }
-                else if (!name.StartsWith("default"))
-                {
-                    opt[name] = value;
-                }
-            }
+            set => _booleanOptions[boolOpt] = value;
+            // {
+            //     if (name.StartsWith("invert"))
+            //     {
+            //         name = "no" + name.Substring(6);
+            //         _booleanOptions[name] = !value;
+            //     }
+            //     else if (!name.StartsWith("default"))
+            //     {
+            //         _booleanOptions[name] = value;
+            //     }
+            // }
         }
 
-        public bool GetInt(string name, out int val)
+        public bool GetStringAsInt(StringOption name, out int val)
         {
             val = 0;
-            return str.TryGetValue(name, out string s) && int.TryParse(s, out val);
+            return _stringOptions.TryGetValue(name, out string s) && int.TryParse(s, out val);
         }
 
-        public bool GetInt(string name, int min, int max, out int val)
+        public bool GetStringAsInt(StringOption name, int min, int max, out int val)
         {
             val = 0;
-            return str.TryGetValue(name, out string s) && int.TryParse(s, out val) && val >= min && val <= max;
+            return _stringOptions.TryGetValue(name, out string s) && int.TryParse(s, out val) && val >= min &&
+                   val <= max;
         }
 
-        public void SetInt(string name, int? maybeVal)
+        public void SetInt(StringOption name, int? maybeVal)
         {
-            if (maybeVal is int val)
+            switch (maybeVal)
             {
-                str[name] = val.ToString();
-            }
-            else
-            {
-                str.Remove(name);
+                case { } exists:
+                    _stringOptions[name] = $"{exists}";
+                    break;
+                case null:
+                    _stringOptions.Remove(name);
+                    break;
             }
         }
 
@@ -177,21 +178,21 @@ namespace RandomizerCommon
             {
                 difficulty = Math.Max(0, Math.Min(100, value));
                 // Linear scaling for these params, from 0 to 1. But severity may depend on game
-                if (Game == FromGame.ER)
-                {
-                    // So far, unfair is not used in ER
-                    num["unfairweight"] = FromRange(40, 80);
-                    num["veryunfairweight"] = FromRange(70, 100);
-                    num["keyitemdifficulty"] = FromRange(30, 100);
-                    num["allitemdifficulty"] = FromRange(0, 100);
-                }
-                else
-                {
-                    num["unfairweight"] = FromRange(40, 80);
-                    num["veryunfairweight"] = FromRange(70, 100);
-                    num["keyitemdifficulty"] = FromRange(20, 60);
-                    num["allitemdifficulty"] = FromRange(0, 80);
-                }
+                // if (Game == FromGame.ER)
+                // {
+                // So far, unfair is not used in ER
+                _numericOptions[NumericOption.UnfairWeight] = FromRange(40, 80);
+                _numericOptions[NumericOption.VeryUnfairWeight] = FromRange(70, 100);
+                _numericOptions[NumericOption.KeyItemDifficulty] = FromRange(30, 100);
+                _numericOptions[NumericOption.AllItemDifficulty] = FromRange(0, 100);
+                // }
+                // else
+                // {
+                //     _numericOptions["unfairweight"] = FromRange(40, 80);
+                //     _numericOptions["veryunfairweight"] = FromRange(70, 100);
+                //     _numericOptions["keyitemdifficulty"] = FromRange(20, 60);
+                //     _numericOptions["allitemdifficulty"] = FromRange(0, 80);
+                // }
 
                 // This one is a multiplicative weight, but important for distributing key items throughout the game.
                 float key;
@@ -199,7 +200,7 @@ namespace RandomizerCommon
                 else if (difficulty < 20) key = 2 + 2 * FromRange(0, 20);
                 else if (difficulty < 60) key = 4 + 6 * FromRange(20, 60);
                 else key = 10 + 90 * FromRange(60, 100);
-                num["keyitemchainweight"] = key;
+                _numericOptions[NumericOption.KeyItemChainWeight] = key;
             }
         }
 
@@ -217,10 +218,11 @@ namespace RandomizerCommon
 
         public string GameNameForFile => Game.ToString();
 
-        public float GetNum(string name)
-        {
-            return num[name];
-        }
+        public float this[NumericOption name] => _numericOptions[name];
+        // public float GetNum(string name)
+        // {
+        //     return _numericOptions[name];
+        // }
 
         // Options which are purely aesthetic or related to installation
         private static HashSet<string> logiclessOptions = new HashSet<string> { "mergemods", "uxm", "bossbgm" };
@@ -229,18 +231,18 @@ namespace RandomizerCommon
         public SortedSet<string> GetLogicOptions()
         {
             return new SortedSet<string>(
-                opt.Where(e => e.Value && !logiclessOptions.Contains(e.Key)).Select(e => e.Key));
+                _booleanOptions.Where(e => e.Value && !logiclessOptions.Contains(e.Key)).Select(e => e.Key));
         }
 
         public SortedSet<string> GetOptions()
         {
-            return new SortedSet<string>(opt.Where(e => e.Value).Select(e => e.Key));
+            return new SortedSet<string>(_booleanOptions.Where(e => e.Value).Select(e => e.Key));
         }
 
         public string ConfigString(bool includeSeed = false, bool includePreset = false, bool onlyLogic = true)
         {
             SortedSet<string> words = onlyLogic ? GetLogicOptions() : GetOptions();
-            words.UnionWith(str.Select(e => $"{e.Key}:{e.Value}"));
+            words.UnionWith(_stringOptions.Select(e => $"{e.Key}:{e.Value}"));
             string result = string.Join(" ", words);
             // Colon syntax should be safe to use for other games, but test it out first.
             // At some point, we could switch to using the str dictionary directly.

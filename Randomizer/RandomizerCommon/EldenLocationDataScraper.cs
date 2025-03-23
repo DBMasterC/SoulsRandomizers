@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using RefactorCommon;
 using SoulsFormats;
 using SoulsIds;
 using YamlDotNet.Serialization;
@@ -34,7 +35,7 @@ namespace RandomizerCommon
 
         public LocationData FindItems(GameData game, EldenCoordinator coord, RandomizerOptions opt)
         {
-            if (opt["dumplot"]) addUnused = true;
+            if (opt[BooleanOption.DumpLot]) addUnused = true;
 
             ItemLocs allLocs = FindItemLocs(game, coord, opt);
 
@@ -47,9 +48,9 @@ namespace RandomizerCommon
             {
                 game.ItemForName("Imbued Sword Key"), game.ItemForName("Imbued Sword Key 2"), game.ItemForName("Imbued Sword Key 3"),
             };
-            if (opt["dumplot"]) syntheticUniqueItems.Clear();
+            if (opt[BooleanOption.DumpLot]) syntheticUniqueItems.Clear();
 
-            if (opt["html"]) EldenDataPrinter.WriteHTMLHeader("Elden Ring Item Analysis");
+            if (opt[BooleanOption.Html]) EldenDataPrinter.WriteHTMLHeader("Elden Ring Item Analysis");
             void writeHtmlSection(string name, string color)
             {
                 Console.WriteLine($"<h2>{name}</h2><div style=\"background-color: {color};\">");
@@ -60,7 +61,7 @@ namespace RandomizerCommon
             }
             void dump(string text)
             {
-                if (opt["html"])
+                if (opt[BooleanOption.Html])
                 {
                     Console.WriteLine(System.Net.WebUtility.HtmlEncode(text));
                 }
@@ -72,9 +73,9 @@ namespace RandomizerCommon
             foreach (string lotType in new List<string> { "map", "enemy" })
             {
                 string paramName = $"ItemLotParam_{lotType}";
-                string paramPrint = opt["machine"] ? paramName + " " : "";
+                string paramPrint = opt[BooleanOption.Machine] ? paramName + " " : "";
                 PARAM itemLots = game.Params[paramName];
-                if (opt["html"]) writeHtmlSection(paramName, lotType == "map" ? "#FFF" : "#F8FFFF");
+                if (opt[BooleanOption.Html]) writeHtmlSection(paramName, lotType == "map" ? "#FFF" : "#F8FFFF");
                 LocationKey prevLocation = null;
                 foreach (KeyValuePair<int, List<EntityId>> entry in allLocs.UsedItemLots[lotType])
                 {
@@ -108,7 +109,7 @@ namespace RandomizerCommon
                     {
                         string text = game.LotName(itemLot);
                         // These are fine - no-ops to game
-                        if (logUnused && opt["reflot"])
+                        if (logUnused && opt[BooleanOption.Reflot])
                         {
                             Console.WriteLine($"*Item lot referenced but missing: {itemLot} [{locs}]");
                         }
@@ -215,7 +216,7 @@ namespace RandomizerCommon
                                     baseLocation = location;
                                 }
 
-                                if (opt["dumpmapfragments"])
+                                if (opt[BooleanOption.DumpMapFragments])
                                 {
                                     if (item.Type == ItemType.GOOD && (item.ID >= 8600 && item.ID < 8650))
                                     {
@@ -225,7 +226,7 @@ namespace RandomizerCommon
                             }
                         }
                         // Write out the info. Some deduplication of sources to make prettier output.
-                        if (opt["dumplot"] || entities.Count == 0)
+                        if (opt[BooleanOption.DumpLot] || entities.Count == 0)
                         {
                             string lotOutput = string.Join(", ", itemLotOutput);
                             if (lotOutput == "") lotOutput = "(no items)";
@@ -272,7 +273,7 @@ namespace RandomizerCommon
                                 }
                                 text2 = $"{string.Join(", ", models)}";
                             }
-                            if (!isBase && opt["dumplot"] && !opt["machine"]) text2 = "^";
+                            if (!isBase && opt[BooleanOption.DumpLot] && !opt[BooleanOption.Machine]) text2 = "^";
                             if (eventFlag > 0) lotOutput += $" - flag {eventFlag}";
                             // string inter = $"[x{row["Unk94"].Value} y{row["Unk95"].Value}]";
                             dump($"{paramPrint}{itemLot} [{text2}] {lotOutput}");
@@ -287,7 +288,7 @@ namespace RandomizerCommon
                 {
                     prevLocation.MaxSlots = 6;
                 }
-                if (opt["html"]) endHtmlSection();
+                if (opt[BooleanOption.Html]) endHtmlSection();
             }
             
             Dictionary<int, LocationKey> shopLocations = new Dictionary<int, LocationKey>();
@@ -313,8 +314,8 @@ namespace RandomizerCommon
             {
                 string suffix = shopType == null ? "" : $"_{shopType}";
                 string paramName = "ShopLineupParam" + suffix;
-                string paramPrint = opt["machine"] ? paramName + " " : "";
-                if (opt["html"]) writeHtmlSection(paramName, shopType == null ? "#FFF" : "#F8FFFF");
+                string paramPrint = opt[BooleanOption.Machine] ? paramName + " " : "";
+                if (opt[BooleanOption.Html]) writeHtmlSection(paramName, shopType == null ? "#FFF" : "#F8FFFF");
                 foreach (PARAM.Row row in game.Params[paramName].Rows)
                 {
                     int shopID = row.ID;
@@ -403,7 +404,7 @@ namespace RandomizerCommon
                         flagText += $" - qwc {qwc}";
                         flagText += $" - {game.QwcName(qwc)}";
                     }
-                    if (opt["dumpshop"] && source != lastSource)
+                    if (opt[BooleanOption.DumpShop] && source != lastSource)
                     {
                         dump($"--- {source}");
                         lastSource = source;
@@ -413,11 +414,11 @@ namespace RandomizerCommon
                     if (costs.Count > 0) costText = " for " + string.Join(", ", costs);
                     string shopSuffix = $"{quantityStr}{costText}{flagText}";
 
-                    if (opt["dumpshop"])
+                    if (opt[BooleanOption.DumpShop])
                     {
                         dump($"{paramPrint}{shopID}: {ItemName(game, item)}{shopSuffix}");
                     }
-                    if (opt["dumpspells"])
+                    if (opt[BooleanOption.DumpSpells])
                     {
                         if (shopID < 600000 && item.Type == ItemType.GOOD && item.ID >= 4000 && item.ID < 8000)
                         {
@@ -454,9 +455,9 @@ namespace RandomizerCommon
                     }
                     data.AddLocation(item, scope, location);
                 }
-                if (opt["html"]) endHtmlSection();
+                if (opt[BooleanOption.Html]) endHtmlSection();
             }
-            if (opt["dumpspells"])
+            if (opt[BooleanOption.DumpSpells])
             {
                 foreach (KeyValuePair<ItemKey, List<(int, int)>> entry in spellShops)
                 {
@@ -1142,7 +1143,7 @@ namespace RandomizerCommon
             EntityId getDisplayEntity(EntityId id)
             {
                 // Rewrite the entity location so it can be identified in-game
-                if (!opt["dumplot"]
+                if (!opt[BooleanOption.DumpLot]
                     && displayEntities.TryGetValue(id.EntityID, out int display)
                     && usedEntities.TryGetValue(display, out List<EntityId> displayId))
                 {

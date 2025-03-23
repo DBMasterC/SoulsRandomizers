@@ -11,6 +11,7 @@ using static RandomizerCommon.LocationData;
 using static RandomizerCommon.LocationData.ItemScope;
 using static RandomizerCommon.Util;
 using System.Numerics;
+using RefactorCommon;
 
 namespace RandomizerCommon
 {
@@ -112,7 +113,7 @@ namespace RandomizerCommon
                 }
                 ann.Slots = slotAnn.Slots;
             }
-            tagslot = options["tagslot"];
+            tagslot = options[BooleanOption.TagSlot];
 
             // Config vars
             foreach (ConfigAnnotation config in ann.Config)
@@ -197,12 +198,12 @@ namespace RandomizerCommon
                     hints.Add(configItems.HintName);
                 }
             }
-            if (options.GetInt("runes_rold", 0, 7, out _))
+            if (options.GetStringAsInt(StringOption.Runes_Rold, 0, 7, out _))
             {
                 // Manual group addition based on replacement. These are expected to exist in the config.
                 ItemGroups["remove"].AddRange(ItemGroups["removerold"]);
             }
-            if (options["allcraft"])
+            if (options[BooleanOption.AllCraft])
             {
                 ItemGroups["remove"].AddRange(ItemGroups["removecraft"]);
             }
@@ -240,7 +241,7 @@ namespace RandomizerCommon
                     }
                     if (group.Includes == "keyitems")
                     {
-                        if (options["headlessignore"])
+                        if (options[BooleanOption.HeadlessIgnore])
                         {
                             exclude.Add("headless");
                         }
@@ -295,38 +296,38 @@ namespace RandomizerCommon
             if (game.EldenRing)
             {
                 RaceModeTags.UnionWith(new[] { "racemode", "boss" });
-                if (options["raceloc_health"])
+                if (options[BooleanOption.RaceLoc_Health])
                 {
                     RaceModeTags.UnionWith(new[] { "seedtree", "church" });
                 }
-                if (options["raceloc_shops"])
+                if (options[BooleanOption.RaceLoc_Shops])
                 {
                     RaceModeTags.Add("raceshop");
                 }
-                if (options["raceloc_altboss"])
+                if (options[BooleanOption.RaceLoc_AltBoss])
                 {
                     RaceModeTags.Add("altboss");
                 }
-                if (options["raceloc_talisman"])
+                if (options[BooleanOption.RaceLoc_Talisman])
                 {
                     RaceModeTags.Add("talisman");
                 }
-                if (!options["night"])
+                if (!options[BooleanOption.Night])
                 {
                     NoRaceModeTags.Add("night");
                 }
-                if (options["nocaves"])
+                if (options[BooleanOption.NoCaves])
                 {
                     NoRaceModeTags.Add("minidungeon");
                 }
-                if (options["fog"] && options["crawl"])
+                if (options[BooleanOption.Fog] && options[BooleanOption.Crawl])
                 {
                     NoRaceModeTags.Add("nocrawl");
                 }
                 // TODO: Before full customization, find a way to add items to norandom slots.
                 // Until then, we may need to add some extra slots to fit all racemode items.
-                if (options["racemode_upgrades"] && options["norandom"]
-                    && !options["raceloc_health"] && !options["raceloc_altboss"] && !options["raceloc_talisman"])
+                if (options[BooleanOption.RaceMode_Upgrades] && options[BooleanOption.NoRandom]
+                    && !options[BooleanOption.RaceLoc_Health] && !options[BooleanOption.RaceLoc_AltBoss] && !options[BooleanOption.RaceLoc_Talisman])
                 {
                     RaceModeTags.Add("upgradeshop");
                 }
@@ -709,7 +710,7 @@ namespace RandomizerCommon
                     restrict.KeyAreas = processLocations(restrict.KeyAreas);
                 }
                 // For now, keep Bell Bearings roughly where they are, even in fog mode.
-                bool allowAny = opt["fog"] && (restrict.Name == null || !restrict.Name.Contains("Bell Bearing"));
+                bool allowAny = opt[BooleanOption.Fog] && (restrict.Name == null || !restrict.Name.Contains("Bell Bearing"));
                 processLocationList(restrict.Unique, allowAny);
                 // TODO: How does this affect DS3?
                 if (restrict.Unique != null && restrict.Unique.Count == 0) restrict.Unique = null;
@@ -1292,7 +1293,7 @@ namespace RandomizerCommon
                 }
                 if (Until != null || AreaUntil != null)
                 {
-                    if (Until == "always" || (opt["fog"] && !TagList.Contains("foguntil")))
+                    if (Until == "always" || (opt[BooleanOption.Fog] && !TagList.Contains("foguntil")))
                     {
                         // 'Until always' allows key item logic
                         // Fog gate randomizer is expected to make these permanently available as well, unless marked otherwise.
@@ -1308,15 +1309,15 @@ namespace RandomizerCommon
                     }
                 }
                 // opt may be null, so only check it if there's a manual tag
-                if (TagList.Contains("carp") && !opt["carpsanity"])
+                if (TagList.Contains("carp") && !opt[BooleanOption.CarpSanity])
                 {
                     TagList.Add("norandom");
                 }
-                if (TagList.Contains("ng+") && opt["nongplusrings"])
+                if (TagList.Contains("ng+") && opt[BooleanOption.NoNgPlusRings])
                 {
                     TagList.Add("norandom");
                 }
-                if ((TagList.Contains("sorceries") || TagList.Contains("incantations")) && opt["spellshops"])
+                if ((TagList.Contains("sorceries") || TagList.Contains("incantations")) && opt[BooleanOption.SpellShops])
                 {
                     TagList.Add("restrict");
                 }

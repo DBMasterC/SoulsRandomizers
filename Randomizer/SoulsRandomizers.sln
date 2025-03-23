@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrayIris.Utilities", "..\ye
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoulsFormats", "..\SoulsFormatsNEXT\SoulsFormats\SoulsFormats.csproj", "{972BC3AD-3DF3-4578-8731-33DCCFCCF426}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefactorCommon", "RefactorCommon\RefactorCommon.csproj", "{18F03AA0-2525-416C-B020-7D89C6FEE46F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,14 @@ Global
 		{972BC3AD-3DF3-4578-8731-33DCCFCCF426}.Release|Any CPU.Build.0 = Release|Any CPU
 		{972BC3AD-3DF3-4578-8731-33DCCFCCF426}.Release|x64.ActiveCfg = Release|Any CPU
 		{972BC3AD-3DF3-4578-8731-33DCCFCCF426}.Release|x64.Build.0 = Release|Any CPU
+		{18F03AA0-2525-416C-B020-7D89C6FEE46F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18F03AA0-2525-416C-B020-7D89C6FEE46F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18F03AA0-2525-416C-B020-7D89C6FEE46F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{18F03AA0-2525-416C-B020-7D89C6FEE46F}.Debug|x64.Build.0 = Debug|Any CPU
+		{18F03AA0-2525-416C-B020-7D89C6FEE46F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18F03AA0-2525-416C-B020-7D89C6FEE46F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18F03AA0-2525-416C-B020-7D89C6FEE46F}.Release|x64.ActiveCfg = Release|Any CPU
+		{18F03AA0-2525-416C-B020-7D89C6FEE46F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

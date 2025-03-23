@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using RefactorCommon;
 using SoulsFormats;
 using YamlDotNet.Core.Tokens;
 using static RandomizerCommon.LocationData;
@@ -370,7 +371,7 @@ namespace RandomizerCommon
 
         public void Write(Random random, RandomizerOptions opt)
         {
-            if (opt["nooutfits"] && opt["nostarting"])
+            if (opt[BooleanOption.NoOutfits] && opt[BooleanOption.NoStarting])
             {
                 return;
             }
@@ -380,14 +381,14 @@ namespace RandomizerCommon
             Dictionary<ItemKey, StatReq> requirements = new Dictionary<ItemKey, StatReq>();
             HashSet<ItemKey> crossbows = new HashSet<ItemKey>();
             PARAM magics = game.Param("Magic");
-            bool twoHand = !opt["onehand"];
-            bool changeStats = !opt["nohand"] && !opt["changestats"];
+            bool twoHand = !opt[BooleanOption.OneHand];
+            bool changeStats = !opt[BooleanOption.NoHand] && !opt[BooleanOption.ChangeStats];
             SortedDictionary<int, List<ItemKey>> cats = new SortedDictionary<int, List<ItemKey>>();
             foreach (ItemKey dataKey in data.Data.Keys)
             {
                 ItemKey key = game.NormalizeWeapon(game.FromCustomWeapon(dataKey));
                 string name = game.Name(key);
-                if (opt["nerfsh"] && name == "Serpent-Hunter") continue;
+                if (opt[BooleanOption.NerfSerpentHunter] && name == "Serpent-Hunter") continue;
                 if (key.Type == ItemType.WEAPON)
                 {
                     PARAM.Row row = game.Item(key);
@@ -535,9 +536,9 @@ namespace RandomizerCommon
             bool printChars = true;
 #if DEBUG
             allowCheat = true;
-            printChars = opt["printchars"];
+            printChars = opt[BooleanOption.DEBUG_PrintChars];
 #endif
-            bool cheat = allowCheat && opt["cheat"];
+            bool cheat = allowCheat && opt[BooleanOption.Cheat];
 
             List<float> eldenWeights = new List<float>
             {
@@ -561,7 +562,7 @@ namespace RandomizerCommon
 
             for (int i = 0; i < 10; i++)
             {
-                if (opt["nostarting"]) break;
+                if (opt[BooleanOption.NoStarting]) break;
                 PARAM.Row row = chara[g.StartId + i];
 
                 int getStat(string name)
@@ -628,8 +629,8 @@ namespace RandomizerCommon
                     Dictionary<ItemKey, int> statDiffs = items[cat].Distinct()
                         .ToDictionary(item => item, item => requirements[item].Eligible(dynamicReqs));
                     List<ItemKey> candidates = items[cat];
-                    if (!opt["nohand"] && (cat == EquipCategory.SHIELD || chClass.Name == "Deprived" ||
-                                           chClass.Name == "Wretch" || !opt["changestats"]))
+                    if (!opt[BooleanOption.NoHand] && (cat == EquipCategory.SHIELD || chClass.Name == "Deprived" ||
+                                                       chClass.Name == "Wretch" || !opt[BooleanOption.ChangeStats]))
                     {
                         candidates = candidates.Where(item => statDiffs[item] >= 0).ToList();
                     }
@@ -651,7 +652,7 @@ namespace RandomizerCommon
                     // This could just be WeightedChoice?
                     List<ItemKey> weightKeys = WeightedShuffle(random, candidates, item =>
                     {
-                        if (opt["nohand"]) return 1;
+                        if (opt[BooleanOption.NoHand]) return 1;
                         int diff = statDiffs[item];
                         float weight;
                         if (diff >= 4)
@@ -690,7 +691,7 @@ namespace RandomizerCommon
 
                     ItemKey selected = weightKeys[0];
                     items[cat].Remove(selected);
-                    if (statDiffs[selected] < 0 && !opt["nohand"])
+                    if (statDiffs[selected] < 0 && !opt[BooleanOption.NoHand])
                     {
                         dynamicReqs.Adjust(requirements[selected]);
                         fudgeFactor *= -statDiffs[selected];
@@ -713,7 +714,7 @@ namespace RandomizerCommon
                     if (printChars)
                         Console.WriteLine(
                             $"  {entry.Key} is now {game.Name(selected)}, meets requirements by {statDiffs[selected]}");
-                    selectedItems[selected] = (cat, opt["nohand"] ? statDiffs[selected] : 0);
+                    selectedItems[selected] = (cat, opt[BooleanOption.NoHand] ? statDiffs[selected] : 0);
                 }
 
                 // In Elden Ring, also change display characters, and add text descriptions
@@ -768,7 +769,7 @@ namespace RandomizerCommon
                 }
 
                 int statChange = dynamicReqs.Eligible(chReqs);
-                if (statChange < 0 && !opt["nohand"])
+                if (statChange < 0 && !opt[BooleanOption.NoHand])
                 {
                     setStat("baseStr", dynamicReqs.Str);
                     setStat("baseDex", dynamicReqs.Dex);
@@ -835,7 +836,7 @@ namespace RandomizerCommon
             if (printChars) Console.WriteLine();
 
             // Now, have fun with NPCs
-            if (opt["nooutfits"]) return;
+            if (opt[BooleanOption.NoOutfits]) return;
             // Just remove Symbol of Avarice first (may not matter with Irregulator, but those are more chaotic anyway)
             Dictionary<int, ArmorSet> npcArmors = new Dictionary<int, ArmorSet>();
             Dictionary<string, int> npcNameRows = new Dictionary<string, int>();
@@ -892,49 +893,7 @@ namespace RandomizerCommon
 
         public void SetSpecialOutfits(RandomizerOptions opt, EnemyLocations enemyLocs)
         {
-            if (!game.EldenRing || enemyLocs.Outfit == null) return;
-            if (opt["testoutfit"])
-            {
-                List<string> outfits = enemyLocs.Outfit.Split('|').Skip(20).ToList();
-                for (int id = 0; id < Math.Min(10, outfits.Count); id++)
-                {
-                    string outfit = outfits[id];
-                    List<ItemKey> items = ParseOutfit(outfit);
-                    PARAM.Row row = game.Params["CharaInitParam"][3000 + id];
-                    for (int i = 0; i < 4; i++)
-                    {
-                        ItemKey item = items[i];
-                        row[g.ArmorSlots[i]].Value = item == null ? -1 : item.ID;
-                    }
-                }
-
-                return;
-            }
-
-            try
-            {
-                List<ItemKey> items = ParseOutfit(enemyLocs.Outfit);
-                for (int chrId = 23241; chrId <= 23248; chrId++)
-                {
-                    PARAM.Row row = game.Params["CharaInitParam"][chrId];
-                    for (int i = 0; i < 4; i++)
-                    {
-                        ItemKey item = items[i];
-                        row[g.ArmorSlots[i]].Value = item == null ? -1 : item.ID;
-                        if (item?.ID == 1090000) break;
-                    }
-                }
-            }
-#if !DEBUG
-            catch (Exception e)
-            {
-                // It's really not that important
-                return;
-            }
-#endif
-            finally
-            {
-            }
+            return;
         }
 
         internal List<ItemKey> ParseOutfit(string outfit)

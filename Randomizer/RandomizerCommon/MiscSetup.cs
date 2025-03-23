@@ -1023,7 +1023,7 @@ namespace RandomizerCommon
                 {
                     endRunes = 7;
                 }
-                else if (opt.GetInt("runes_end", 1, 7, out int runeOpt))
+                else if (opt.GetStringAsInt("runes_end", 1, 7, out int runeOpt))
                 {
                     endRunes = runeOpt;
                 }

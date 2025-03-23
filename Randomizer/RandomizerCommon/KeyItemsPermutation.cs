@@ -63,12 +63,12 @@ namespace RandomizerCommon
                 }
                 if (explain) Console.WriteLine($"Order of required Great Runes: {string.Join(", ", runes)}");
                 int leyndellRunes = 2;
-                if (options.GetInt("runes_leyndell", 0, 7, out int runeOpt))
+                if (options.GetStringAsInt("runes_leyndell", 0, 7, out int runeOpt))
                 {
                     leyndellRunes = runeOpt;
                 }
                 int roldRunes = -1;
-                if (options.GetInt("runes_rold", 0, 7, out runeOpt))
+                if (options.GetStringAsInt("runes_rold", 0, 7, out runeOpt))
                 {
                     roldRunes = runeOpt;
                 }
@@ -427,7 +427,7 @@ namespace RandomizerCommon
             // Assign key items
             bool debugChoices = false;
             // public readonly Dictionary<ItemKey, PlacementRestrictionAnnotation> ItemRestrict = new Dictionary<ItemKey, PlacementRestrictionAnnotation>();
-            float scaling = options.GetNum("keyitemchainweight");
+            float scaling = options[NumericOption.KeyItemChainWeight];
             Dictionary<string, Expr> reqs = CollapseReqs();
             foreach (string item in itemOrder)
             {
